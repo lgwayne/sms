@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <classPathEntry location="C:\Users\Wayne\.m2\repository\mysql\mysql-connector-java\5.1.47\mysql-connector-java-5.1.47.jar"/>
+    <context id="test" targetRuntime="MyBatis3">
+        <!-- 一些工具 -->
+       <!-- <plugin type="org.mybatis.generator.plugins.EqualsHashCodePlugin"></plugin>-->
+        <plugin type="org.mybatis.generator.plugins.SerializablePlugin"></plugin>
+        <!--<plugin type="org.mybatis.generator.plugins.ToStringPlugin"></plugin>-->
+        <commentGenerator>
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="false" />
+        </commentGenerator>
+        <!--数据库链接 参数 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/cms_v1?useUnicode=true&amp;characterEncoding=UTF-8&amp;autoReconnect=true&amp;useSSL=false&amp;serverTimezone=Asia/Shanghai"
+                        userId="root"
+                        password="19970806">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <!-- 默认false，把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
+			NUMERIC 类型解析为java.math.BigDecimal -->
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!-- 生成模型的包名和位置 -->
+        <javaModelGenerator targetPackage="com.wayne.sms.pojo"
+                            targetProject="src/main/java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="true" />
+            <!-- 从数据库返回的值被清理前后的空格 -->
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!-- 生成映射文件的包名和位置 -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true" />
+        </sqlMapGenerator>
+
+        <!-- 生成DAO的包名和位置 -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.wayne.sms.dao" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+
+        <!-- 要生成哪些表 -->
+        <!--<table tableName="t_clazz" domainObjectName="Clazz"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="clazz_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+        <!--<table tableName="t_college" domainObjectName="College"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="college_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+
+        <!--<table tableName="t_course" domainObjectName="Course" enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="course_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+        <!--<table tableName="t_major" domainObjectName="Major"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="major_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+
+
+        <!--<table tableName="t_major_course" domainObjectName="MajorCourse"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false">-->
+        <!--</table>-->
+
+
+        <!--<table tableName="t_math_score" domainObjectName="MathScore"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="true">-->
+            <!--<generatedKey column="id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="t_sa_college_copy" domainObjectName="SaCollege_copy"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="true">-->
+            <!--&lt;!&ndash;<generatedKey column="id" sqlStatement="Mysql" identity="true"/>&ndash;&gt;-->
+        <!--</table>-->
+        <!--<table tableName="t_sa_major" domainObjectName="SaMajor"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="true">-->
+            <!--&lt;!&ndash;<generatedKey column="id" sqlStatement="Mysql" identity="true"/>&ndash;&gt;-->
+        <!--</table>-->
+        <!--<table tableName="t_sa_clazz" domainObjectName="SaClazz"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="true">-->
+            <!--&lt;!&ndash;<generatedKey column="id" sqlStatement="Mysql" identity="true"/>&ndash;&gt;-->
+        <!--</table>-->
+        <!--<table tableName="t_sa_student" domainObjectName="SaStudent"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="true">-->
+            <!--&lt;!&ndash;<generatedKey column="id" sqlStatement="Mysql" identity="true"/>&ndash;&gt;-->
+        <!--</table>-->
+
+
+        <!--<table tableName="t_role" domainObjectName="Role"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="role_id" sqlStatement="Mysql" identity="true"/>-->
+    <!--</table>-->
+
+        <!--<table tableName="t_student" domainObjectName="Student"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="stu_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+
+        <!--<table tableName="t_teacher_clazz" domainObjectName="TeacherClazz"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+        <!--</table>-->
+
+
+        <table tableName="t_teacher" domainObjectName="Teacher"
+               enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               selectByExampleQueryId="false" >
+            <generatedKey column="teacher_id" sqlStatement="Mysql" identity="true"/>
+        </table>
+
+        <!--<table tableName="t_teacher_course" domainObjectName="TeacherCourse"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+    <!--</table>-->
+
+        <!--<table tableName="t_userlogin" domainObjectName="Userlogin" enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false" -->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="user_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
+        <!--<table tableName="t_std_major" domainObjectName="StdMajor" enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="false" >-->
+        <!--</table>-->
+        <!--<table tableName="t_std_clazz" domainObjectName="StdClazz" enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="false" >-->
+        <!--</table>-->
+        <!--<table tableName="t_std_student" domainObjectName="StdStudent" enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="false" >-->
+        <!--</table>-->
+
+
+    </context>
+</generatorConfiguration>

@@ -1,0 +1,141 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div  th:fragment="leftMenu">
+	<!-- 左边菜单 -->
+	<div id="skin-select">
+		<!-- PC端 LOGO -->
+	    <div id="logo">
+	     <h1 style="font-family:'Microsoft Tai Le','宋楷',serif">成绩管理系统</h1>
+	    </div>
+	<!--END PC端 LOGO -->
+	<!--点击隐藏左边菜单栏按钮 -->
+	    <a id="toggle">
+	        <span class="entypo-menu"></span>
+	    </a>
+
+	<!-- 左侧菜单栏 -->
+	    <div class="skin-part">
+	        <div id="tree-wrap">
+	            <div class="side-bar">
+					<ul id="menu-showhide" class="topnav menu-left-nest" >
+						<li>
+							<a href="#" style="border-left:0px solid!important;" class="title-menu-left">
+								<span>教务管理</span>
+								<i data-toggle="tooltip" class="entypo-cog pull-right config-wrap" title="教务管理"></i>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="/admin/userLogin/list" title="用户管理" target="mainFrame">
+								<i class="icon icon-user"></i>
+								<span>用户管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="课程管理">
+								<i class="entypo-doc-text"></i>
+								<span>课程管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="/admin/teacher/list" title="教师管理" target="mainFrame">
+								<i class="icon-user-group"></i>
+								<span>教师管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="/admin/student/list" title="学生管理" target="mainFrame">
+								<i class="icon-user-group"></i>
+								<span>学生管理</span>
+							</a>
+						</li>
+					</ul>
+
+					<ul id="menu-showhide1" class="topnav menu-left-nest" >
+						<li>
+							<a href="#" style="border-left:0px solid!important;" class="title-menu-left">
+								<span>成绩管理</span>
+								<i data-toggle="tooltip" class="entypo-cog pull-right config-wrap" title="成绩管理"></i>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="/admin/mathScore/list" title="科目成绩管理" target="mainFrame">
+								<i class="icon-media-record"></i>
+								<span>科目成绩管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="学院成绩">
+								<i class="icon-document-new"></i>
+								<span>学院成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saCollege/view.html" target="mainFrame" title="学院成绩概况" ><i class="icon-media-record"></i><span>学院成绩概况</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saCollege/bar.html" target="mainFrame"  title="学院成绩对比"><i class="icon-user"></i><span>学院成绩对比</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saCollege/pie.html" target="mainFrame" title="学院成绩统计"><i class="icon-user"></i><span>学院成绩统计</span></a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="专业成绩">
+								<i class="icon-document-new"></i>
+								<span>专业成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saMajor/view.html" target="mainFrame" title="专业成绩概况"><i class="icon-media-record"></i><span>专业成绩概况</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load"  href="/admin/saMajor/bar.html" target="mainFrame" title="专业成绩对比"><i class="icon-user"></i><span>专业成绩对比</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saMajor/pie.html" target="mainFrame" title="专业成绩统计"><i class="icon-user"></i><span>专业成绩统计</span></a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="班级成绩">
+								<i class="icon-document-new"></i>
+								<span>班级成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saClazz/view.html" target="mainFrame" title="班级成绩概况"><i class="icon-media-record"></i><span>班级成绩概况</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saClazz/bar.html" target="mainFrame" title="班级成绩对比"><i class="icon-user"></i><span>班级成绩对比</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saClazz/pie.html" target="mainFrame" title="班级成绩统计"><i class="icon-user"></i><span>班级成绩统计</span></a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="个人成绩">
+								<i class="icon-document-new"></i>
+								<span>个人成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saStudent/view.html" target="mainFrame" title="班级成绩概况"><i class="icon-media-record"></i><span>个人成绩概况</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="/admin/saStudent/bar.html" target="mainFrame" title="个人成绩对比"><i class="icon-user"></i><span>个人成绩对比</span></a>
+								</li>
+							</ul>
+						</li>
+
+					</ul>
+
+
+	            </div>
+	        </div>
+	    </div>
+	    <!-- 左侧菜单栏 -->
+	</div>
+	<!-- 结束左边菜单栏 -->
+
+</div>

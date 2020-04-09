@@ -1,0 +1,208 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div  th:fragment="leftMenu">
+	<!-- 左边菜单 -->
+	<div id="skin-select">
+		<!-- PC端 LOGO -->
+	    <div id="logo">
+	     <h1>SpringBoot<span>v2</span></h1>
+	    </div>
+	<!--END PC端 LOGO -->
+	<!--点击隐藏左边菜单栏按钮 -->
+	    <a id="toggle">
+	        <span class="entypo-menu"></span>
+	    </a>
+	    <!--END点击隐藏左边菜单栏按钮 -->
+	    <!-- PC端搜索按钮 -->
+	    <div class="dark">
+	        <form action="#">
+	            <span>
+					<input type="text" name="search" value="" class="search rounded id_search" placeholder="菜单搜索" autofocus />
+	            </span>
+	        </form>
+	    </div>
+	<!-- 手机端搜索按钮  有bug-->
+	    <div class="search-hover">
+	        <form id="demo-2">
+	            <input type="search" placeholder="Search4 Menu..." class="id_search">
+	        </form>
+	    </div>
+
+	<!-- 左侧菜单栏 -->
+	    <div class="skin-part">
+	        <div id="tree-wrap">
+	            <div class="side-bar">
+					<ul id="menu-showhide" class="topnav menu-left-nest" >
+						<li>
+							<a href="#" style="border-left:0px solid!important;" class="title-menu-left">
+								<span>教务管理</span>
+								<i data-toggle="tooltip" class="entypo-cog pull-right config-wrap" title="教务管理"></i>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" th:href="@{${rootPath}+''}" title="用户管理">
+								<i class="icon icon-user"></i>
+								<span>用户管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" th:href="@{${rootPath}+''}" title="课程管理">
+								<i class="entypo-doc-text"></i>
+								<span>课程管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" th:href="@{${rootPath}+''}" title="教师管理">
+								<i class="icon-user-group"></i>
+								<span>教师管理</span>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" th:href="@{${rootPath}+''}" title="学生管理">
+								<i class="icon-user-group"></i>
+								<span>学生管理</span>
+							</a>
+						</li>
+					</ul>
+
+					<ul id="menu-showhide1" class="topnav menu-left-nest" >
+						<li>
+							<a href="#" style="border-left:0px solid!important;" class="title-menu-left">
+								<span>成绩管理</span>
+								<i data-toggle="tooltip" class="entypo-cog pull-right config-wrap" title="成绩管理"></i>
+							</a>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="学院成绩">
+								<i class="icon-document-new"></i>
+								<span>学院成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="学院成绩管理"><i class="icon-media-record"></i><span>学院成绩管理</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="学院成绩分析"><i class="icon-user"></i><span>学院成绩分析</span></a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="专业成绩">
+								<i class="icon-document-new"></i>
+								<span>专业成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="专业成绩管理"><i class="icon-media-record"></i><span>专业成绩管理</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="专业成绩分析"><i class="icon-user"></i><span>专业成绩分析</span></a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="班级成绩">
+								<i class="icon-document-new"></i>
+								<span>班级成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="班级成绩管理"><i class="icon-media-record"></i><span>班级成绩管理</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="班级成绩分析"><i class="icon-user"></i><span>班级成绩分析</span></a>
+								</li>
+							</ul>
+						</li>
+						<li>
+							<a class="tooltip-tip" href="#" title="个人成绩">
+								<i class="icon-document-new"></i>
+								<span>个人成绩</span>
+							</a>
+							<ul>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="个人成绩管理"><i class="icon-media-record"></i><span>个人成绩管理</span></a>
+								</li>
+								<li>
+									<a class="tooltip-tip2 ajax-load" href="#" title="个人成绩分析"><i class="icon-user"></i><span>个人成绩分析</span></a>
+								</li>
+							</ul>
+						</li>
+						
+						
+					</ul>
+
+
+
+
+
+	                    <!--<li>-->
+	                        <!--<a class="tooltip-tip" href="#" title="成绩分析">-->
+	                            <!--<i class="icon-document-new"></i>-->
+	                            <!--<span>成绩分析</span>-->
+	                        <!--</a>-->
+	                        <!--<ul>-->
+	                            <!--<li>-->
+	                                <!--<a class="tooltip-tip2 ajax-load" href="#" title="学院成绩分析"><i class="icon-media-record"></i><span>学院成绩分析</span></a>-->
+	                            <!--</li>-->
+	                             <!--<li>-->
+	                                <!--<a class="tooltip-tip2 ajax-load" href="#" title="专业成绩分析"><i class="icon-user"></i><span>专业成绩分析</span></a>-->
+	                            <!--</li>-->
+	                            <!--<li>-->
+	                                <!--<a class="tooltip-tip2 ajax-load" href="#" title="班级成绩分析"><i class="entypo-newspaper"></i><span>班级成绩分析</span></a>-->
+	                            <!--</li>-->
+	                            <!--<li>-->
+	                                <!--<a class="tooltip-tip2 ajax-load" href="#" title="个人成绩分析"><i class="fontawesome-money"></i><span>个人成绩分析</span></a>-->
+	                            <!--</li>-->
+	                        <!--</ul>-->
+	                    <!--</li>-->
+	                <!--</ul>-->
+					
+					<!-- 教务管理 -->
+	                <!--<ul id="menu-showhide" class="topnav menu-left-nest">-->
+	                    <!--<li>-->
+	                        <!--<a href="#" style="border-left:0px solid!important;" class="title-menu-left">-->
+	                            <!--<span>教务管理</span>-->
+	                            <!--<i data-toggle="tooltip" class="entypo-cog pull-right config-wrap"></i>-->
+	                        <!--</a>-->
+	                    <!--</li>-->
+	                    <!--<li>-->
+	                        <!--<a class="tooltip-tip" th:href="@{${rootPath}+'UserController/view'}" title="用户管理">-->
+	                            <!--<i class="icon icon-user"></i>-->
+								<!--<span>用户管理</span>-->
+	                 		<!--</a>-->
+	                    <!--</li>-->
+	                    <!--<li>-->
+	                        <!--<a class="tooltip-tip" th:href="@{${rootPath}+'RoleController/view'}" title="角色管理">-->
+	                            <!--<i class="icon icon-user-group"></i>-->
+								<!--<span>角色管理</span>-->
+	                 		<!--</a>-->
+	                    <!--</li>-->
+	                    <!--<li>-->
+	                        <!--<a class="tooltip-tip" th:href="@{${rootPath}+'PermissionController/view'}" title="权限管理">-->
+	                            <!--<i class="fa fa-key"></i>-->
+								<!--<span>权限管理</span>-->
+	                 		<!--</a>-->
+	                    <!--</li>-->
+	                    <!--<li>-->
+	                        <!--<a class="tooltip-tip" th:href="@{${rootPath}+'FileController/view'}" title="文件管理">-->
+	                            <!--<i class="fa fa-file-image-o"></i>-->
+								<!--<span>文件管理</span>-->
+	                 		<!--</a>-->
+	                    <!--</li>-->
+	                    <!--<li>-->
+	                        <!--<a class="tooltip-tip" th:href="@{${rootPath}+'LogController/view'}" title="文件管理">-->
+	                            <!--<i class="fa fa-bitbucket"></i>-->
+								<!--<span>日志管理</span>-->
+	                 		<!--</a>-->
+	                    <!--</li>-->
+	                <!--</ul>-->
+					<!-- 结束系统设置 -->
+	
+	            </div>
+	        </div>
+	    </div>
+	    <!-- 左侧菜单栏 -->
+	</div>
+	<!-- 结束左边菜单栏 -->
+
+</div>
