@@ -30,7 +30,7 @@
             position: absolute;
             width: 96%;
             height: 74%;
-            background-color: lightskyblue;
+            /*background-color: lightskyblue;*/
             margin: 40px 5px;
         }
 
@@ -252,7 +252,7 @@
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data: []
+                data:["成绩优秀人数","成绩良好人数","成绩中等人数","成绩及格人数","成绩不及格人数"]
             },
             series: [
                 {
@@ -284,7 +284,6 @@
                 console.log(data);
                 //给option赋值
                 if (data.code == 200) {
-                    option.legend.data = data.legendData;
                     option.series[0].data = data.seriesData;
                     // 使用刚指定的配置项和数据显示图表。
                     myEcharts.setOption(option);

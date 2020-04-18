@@ -202,6 +202,7 @@
         window.addEventListener("resize", function() {
             myEcharts.resize();
         });
+        //1，初始化图表
         var myEcharts = echarts.init(document.getElementById("bar-content"));
         //2, 指定图表的配置项和数据
         var option = {
@@ -282,8 +283,7 @@
         };
 
         $.ajax({
-            //几个参数需要注意一下
-            type: "get",//方法类型
+            type: "get",
             url:'/admin/saCollege/bar',
             data: $('#form-search').serialize(),
             dataType:'json',

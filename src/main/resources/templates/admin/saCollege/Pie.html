@@ -29,7 +29,7 @@
         position: absolute;
         width: 96%;
         height: 74%;
-        background-color: pink;
+        /*background-color: pink;*/
         margin: 40px 5px;
     }
 
@@ -207,6 +207,7 @@
         window.addEventListener("resize", function() {
             myEcharts.resize();
         });
+        //1，初始化图表
         var myEcharts = echarts.init(document.getElementById("bar-content"));
         //2, 指定图表的配置项和数据
         var option = {
@@ -221,7 +222,7 @@
             legend: {
                 orient: 'vertical',
                 left: 'left',
-                data:[]
+                data:["成绩优秀人数","成绩良好人数","成绩中等人数","成绩及格人数","成绩不及格人数"]
             },
             series : [
                 {
@@ -231,7 +232,6 @@
                     center: ['50%', '60%'],
                     data:[],
                     label: { show: true },
-                    // 不显示连接线
                     labelLine: { show: true },
                     itemStyle: {
                         emphasis: {
@@ -253,7 +253,6 @@
                 console.log(data);
                 //给option赋值
                 if (data.code==200){
-                    option.legend.data = data.legendData;
                     option.series[0].data = data.seriesData;
                     // 使用刚指定的配置项和数据显示图表。
                     myEcharts.setOption(option);

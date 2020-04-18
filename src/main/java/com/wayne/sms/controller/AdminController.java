@@ -2,6 +2,8 @@ package com.wayne.sms.controller;
 
 import com.github.pagehelper.PageInfo;
 import com.google.code.kaptcha.Constants;
+import com.wayne.sms.dao.TeacherClazzMapper;
+import com.wayne.sms.dao.TeacherCourseMapper;
 import com.wayne.sms.domain.AjaxResult;
 import com.wayne.sms.model.TableSplitResult;
 import com.wayne.sms.model.Tablepar;
@@ -31,6 +33,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.security.PrivateKey;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.apache.naming.SelectorContext.prefix;
@@ -54,35 +57,16 @@ public class AdminController extends BaseController {
 
     private String score="admin/mathScore";
 
+    private String teacherCourse="admin/teacherCourse";
 
-    @Autowired
-    private UserLoginService userloginService;
 
-    @Autowired
-    private StudentService studentService;
 
-    @Autowired
-    private TeacherService teacherService;
 
-    @Autowired
-    private CollegeService collegeService;
-
-    @Autowired
-    private MathScoreService mathScoreService;
-
-    @Autowired
-    private CourseService courseService;
 
     /*-------------------用户登录模块开始-------------------------*/
     /*
     查看登录用户信息
      */
-//    @GetMapping("admin/user/view.html")
-//    public String view(ModelMap model) {
-//        String str = "用户登录";
-//        setTitle(model, new TitleVo("列表", str + "管理", true, "欢迎进入" + str + "页面", true, false));
-//        return userLogin + "/view";
-//    }
 
     @GetMapping("/admin/userLogin/list")
     public String list(ModelMap model, HttpServletRequest request) {
@@ -93,7 +77,9 @@ public class AdminController extends BaseController {
 
     @PostMapping("admin/userLogin/list")
     @ResponseBody
+    //controller层代码
     public Object list(Tablepar tablepar, String searchText) {
+
         PageInfo<Userlogin> page = userloginService.list(tablepar, searchText);
         TableSplitResult<Userlogin> result = new TableSplitResult<Userlogin>(page.getPageNum(), page.getTotal(), page.getList());
         return result;
@@ -121,7 +107,6 @@ public class AdminController extends BaseController {
         /**
          *根据角色再到添加到相应的学生/教师界面，待完善-------
          */
-
         if (b > 0 && (role == 1 || role == 2)) {
             return AjaxResult.successData(200, "操作成功，请完善教师个人信息");
         } else if (b > 0 && role > 1) {
@@ -159,7 +144,6 @@ public class AdminController extends BaseController {
     @GetMapping("/admin/userLogin/edit/{id}")
     public String edit(@PathVariable("id") String id, ModelMap mmap) {
         Userlogin userlogin = userloginService.selectByPrimaryKey(id);
-        System.out.println("看看这个userlogin" + userlogin);
         mmap.put("Userlogin", userlogin);
         return userLogin + "/edit";
     }
@@ -170,8 +154,7 @@ public class AdminController extends BaseController {
     @PostMapping("admin/userLogin/edit")
     @ResponseBody
     public AjaxResult editSave(Userlogin record) {
-        System.out.println("这是编辑的" + record);
-        String password = MD5Utils.md5(record.getPassword(), null, 1024);
+        String password = MD5Utils.md5(record.getPassword(), null, 1024);//md5加密
         record.setPassword(password);
 
         return toAjax(userloginService.updateByPrimaryKeySelective(record));
@@ -212,6 +195,40 @@ public class AdminController extends BaseController {
 
 
 
+    /*---------------------------课程安排模块开始---------------------------------------*/
+    @GetMapping("/admin/teacherCourse/view")
+    public String teacherCourseView(ModelMap model){
+        String str="课程任教表";
+        setTitle(model, new TitleVo("列表", str+"管理", true,"欢迎进入"+str+"页面", true, false));
+        return teacherCourse + "/list";
+    }
+
+    @PostMapping("admin/teacherCourse/list")
+    @ResponseBody
+    public Object teacherCourselist(Tablepar tablepar,String searchText){
+        PageInfo<TeacherCourse> page=teacherCourseService.list(tablepar,searchText) ;
+        TableSplitResult<TeacherCourse> result=new TableSplitResult<TeacherCourse>(page.getPageNum(), page.getTotal(), page.getList());
+        return  result;
+    }
+
+
+    @GetMapping("/admin/teacherCourse/edit/{id}")
+    public String teacherClazz(@PathVariable("id") String id, ModelMap mmap)
+    {
+
+        TeacherClazzExample example = new TeacherClazzExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(id));
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(example);
+
+        mmap.addAttribute("teacherClazzes",teacherClazzes);
+        return teacherCourse + "/edit";
+    }
+    /*---------------------------课程安排模块结束---------------------------------------*/
+
+
+
+
+
     /*-------------------教師模块开始-------------------------*/
     /*
     查看教师信息
@@ -237,13 +254,28 @@ public class AdminController extends BaseController {
      */
     @GetMapping("/admin/teacher/add")
     public String teacherAdd(ModelMap modelMap) {
+        List<College> colleges = collegeService.selectByExample(new CollegeExample());
+        modelMap.addAttribute("collegeList", colleges);
+
         return teacher + "/add";
     }
 
     @PostMapping("admin/teacher/add")
     @ResponseBody
     public AjaxResult teacherAdd(Teacher teacher) {
-        int b=teacherService.insertSelective(teacher);
+        Userlogin userlogin = new Userlogin();//新建一个用户登录对象，并用教师信息赋值
+        userlogin.setUserName(teacher.getName());
+        userlogin.setRole(2);
+        userlogin.setPassword("64c8b1e43d8ba3115ab40bcea57f010b");//默认密码：123
+        userloginService.insertSelective(userlogin);
+
+        Teacher teacher1 = new Teacher();
+        teacher1.setTeacherId(userlogin.getUserId());//根据用户登录表获取教师编号
+        teacher1.setName(teacher.getName());
+        teacher1.setJob(teacher.getJob());
+        teacher1.setCollegeName(teacher.getCollegeName());
+
+        int b=teacherService.insertSelective(teacher1);
         if(b>0){
             return success();
         }else{
@@ -278,6 +310,8 @@ public class AdminController extends BaseController {
     @GetMapping("/admin/teacher/edit/{id}")
     public String teacherEdit(@PathVariable("id") String id, ModelMap mmap) {
         mmap.put("Teacher", teacherService.selectByPrimaryKey(id));
+        List<College> colleges = collegeService.selectByExample(new CollegeExample());
+        mmap.addAttribute("collegeList", colleges);
         return teacher + "/edit";
     }
 
@@ -313,7 +347,7 @@ public class AdminController extends BaseController {
     @PostMapping("admin/teacher/get/remove")
     @ResponseBody
     public AjaxResult teacherRemove(String ids) {
-        int b=teacherService.deleteByPrimaryKey(ids);
+        int b = userloginService.deleteByPrimaryKey(ids);//根据教师id在用户登录表删除，教师表的信息也会删除
         if(b>0){
             return success();
         }else{
@@ -342,9 +376,9 @@ public class AdminController extends BaseController {
     @PostMapping("admin/student/list")
     @ResponseBody
     public Object studentList(Tablepar tablepar, String searchText,ModelMap model,String cid,String mid,String clid,String grade) {
-//        System.out.println("cid="+cid+",mid="+mid+",clid="+clid+",grade="+grade);
         List<College> colleges = collegeService.selectByExample(new CollegeExample());
-        model.addAttribute("collegeList", colleges);
+        model.addAttribute("collegeList", colleges);//将学院信息以列表形式传到html页面
+
         PageInfo<Student> page=null;
         if (cid==null && mid==null && clid==null){
             page = studentService.list(tablepar, searchText);
@@ -452,6 +486,7 @@ public class AdminController extends BaseController {
     public String scoreList(ModelMap model, HttpServletRequest request) {
         String str = "成绩";
         setTitle(model, new TitleVo("列表", str + "管理", true, "欢迎进入" + str + "页面", true, false));
+        //controller层
         List<College> colleges = collegeService.selectByExample(new CollegeExample());
         model.addAttribute("collegeList", colleges);
 
@@ -463,7 +498,6 @@ public class AdminController extends BaseController {
     @PostMapping("admin/mathScore/list")
     @ResponseBody
     public Object  scoreList(Tablepar tablepar, String searchText,ModelMap model,String cid,String mid,String clid,String grade,String courseName,String scoreOder) {
-//        System.out.println("cid="+cid+",mid="+mid+",clid="+clid+",grade="+grade+",courseName="+courseName);
         PageInfo<MathScore> page = mathScoreService.list(tablepar, searchText,cid,mid,clid,grade,courseName,scoreOder);
         TableSplitResult<MathScore> result = new TableSplitResult<MathScore>(page.getPageNum(), page.getTotal(), page.getList());
         return result;
@@ -476,18 +510,65 @@ public class AdminController extends BaseController {
     @GetMapping("/admin/mathScore/add")
     public String mathScoreAdd(ModelMap modelMap)
     {
+        List<College> colleges = collegeService.selectByExample(new CollegeExample());
+        modelMap.addAttribute("collegeList", colleges);
+
+        List<Course> courseList = courseService.selectByExample(new CourseExample());
+        modelMap.addAttribute("courseList", courseList);
         return score + "/add";
     }
 
     @PostMapping("admin/mathScore/add")
     @ResponseBody
     public AjaxResult add(MathScore mathScore){
-        int b=mathScoreService.insertSelective(mathScore);
-        if(b>0){
-            return success();
-        }else{
-            return error();
-        }
+//        int b=mathScoreService.insertSelective(mathScore);
+//        if(b>0){
+//            return success();
+//        }else{
+//            return error();
+//        }
+//
+
+        System.out.println("before:"+mathScore);
+        String stuId = mathScore.getStuName();
+        mathScore.setStuId(Long.parseLong(stuId));
+
+        //完善学生信息
+        StudentExample studentExample = new StudentExample();
+        studentExample.createCriteria().andStuIdEqualTo(Long.parseLong(stuId));
+        List<Student> students = studentMapper.selectByExample(studentExample);
+        String name = students.get(0).getName();
+        mathScore.setStuName(name);
+        String college = students.get(0).getCollege();
+        mathScore.setCollege(college);
+        String major = students.get(0).getMajor();
+        mathScore.setMajor(major);
+        String clazz = students.get(0).getClazz();
+        mathScore.setClazz(clazz);
+
+        //根据对应科目名获取课程信息(平时成绩占比和期末成绩占比)
+        String courseName = mathScore.getCourseName();
+        CourseExample courseExample = new CourseExample();
+        courseExample.createCriteria().andCourseNameEqualTo(courseName);
+        List<Course> courses = courseMapper.selectByExample(courseExample);
+        Double finalScorePer = courses.get(0).getFinalScorePer();
+        Double regularScorePer = courses.get(0).getRegularScorePer();
+        mathScore.setRegularScorePer(regularScorePer);
+        mathScore.setFinalScorePer(finalScorePer);
+
+        //根据根据成绩和占比算出总评和绩点
+        Double total_score =0.00;
+        total_score=mathScore.getRegularScore()*(regularScorePer*0.01)+mathScore.getFinalScore()*(finalScorePer*0.01);
+        mathScore.setTotalScore((double) Math.round(total_score));
+
+        double tScore = Math.round(total_score);
+        Double gpa=(tScore-50)/10;
+        mathScore.setGpa(gpa);
+
+        System.out.println("添加信息之后的："+mathScore);
+
+
+        return null;
     }
 
     /**
@@ -506,20 +587,20 @@ public class AdminController extends BaseController {
         }
     }
 
-    /**
-     * 检查用户
-     * @return
-     */
-    @PostMapping("admin/mathScore/checkNameUnique")
-    @ResponseBody
-    public int checkNameUnique(MathScore mathScore){
-        int b=mathScoreService.checkNameUnique(mathScore);
-        if(b>0){
-            return 1;
-        }else{
-            return 0;
-        }
-    }
+//    /**
+//     * 检查用户
+//     * @return
+//     */
+//    @PostMapping("admin/mathScore/checkNameUnique")
+//    @ResponseBody
+//    public int checkNameUnique(MathScore mathScore){
+//        int b=mathScoreService.checkNameUnique(mathScore);
+//        if(b>0){
+//            return 1;
+//        }else{
+//            return 0;
+//        }
+//    }
 
 
     /**

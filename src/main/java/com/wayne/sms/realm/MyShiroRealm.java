@@ -67,19 +67,15 @@ public class MyShiroRealm extends AuthorizingRealm {
         if (token.getPrincipal() == null) {
             return null;
         }
-
-        System.out.println("看看这个id是什么"+(String) token.getPrincipal());
-        Long userId = Long.parseLong((String) token.getPrincipal());
-
-//        System.out.println("看看这个id是什么"+userId);
-
-        String password = new String((char[]) token.getCredentials());
+//		System.out.println("可以看看在realm找出来啥"+userInfo);
+//		System.out.println("----->>userInfo=" + userInfo.getUserName() + "---"+ userInfo.getPassword());
+        //        System.out.println("看看这个id是什么"+userId);
+//        String password = new String((char[]) token.getCredentials());
         // 通过username从数据库中查找 User对象，如果找到，没找到.
         // 实际项目中，这里可以根据实际情况做缓存，如果不做，Shiro自己也是有时间间隔机制，2分钟内不会重复执行该方法
+        System.out.println("看看这个id是什么"+(String) token.getPrincipal());
+        Long userId = Long.parseLong((String) token.getPrincipal());
         Userlogin userInfo = userLoginService.findByUserId(userId);
-		System.out.println("可以看看在realm找出来啥"+userInfo);
-
-//		System.out.println("----->>userInfo=" + userInfo.getUserName() + "---"+ userInfo.getPassword());
         if (userInfo == null)
         {
             throw new UnknownAccountException("账户不存在");

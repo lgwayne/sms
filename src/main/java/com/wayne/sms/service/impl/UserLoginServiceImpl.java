@@ -39,7 +39,6 @@ public class UserLoginServiceImpl implements UserLoginService {
         if(name!=null&&!"".equals(name)){
             testExample.createCriteria().andUserNameLike("%"+name+"%");
         }
-
         PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
         List<Userlogin> list= userloginMapper.selectByExample(testExample);
         for (int i = 0; i <list.size(); i++) {
@@ -81,5 +80,19 @@ public class UserLoginServiceImpl implements UserLoginService {
         UserloginExample example=new UserloginExample();
         example.createCriteria().andUserIdIn(stringB);
         return userloginMapper.deleteByExample(example);
+    }
+
+    @Override
+    public PageInfo<Userlogin> listOneTeacher(Tablepar tablepar, String teacherId) {
+        UserloginExample testExample=new UserloginExample();
+        testExample.createCriteria().andUserIdEqualTo(Long.parseLong(teacherId));
+        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
+        List<Userlogin> list= userloginMapper.selectByExample(testExample);
+        for (int i = 0; i <list.size(); i++) {
+            String role_name=list.get(i).getRole()==1?"管理员":list.get(i).getRole()==2?"教师":"学生";
+            list.get(i).setRoleName(role_name);
+        }
+        PageInfo<Userlogin> pageInfo = new PageInfo<Userlogin>(list);
+        return  pageInfo;
     }
 }

@@ -1,8 +1,11 @@
 package com.wayne.sms.controller;
 
+import com.wayne.sms.dao.*;
 import com.wayne.sms.domain.AjaxResult;
 import com.wayne.sms.model.TitleVo;
+import com.wayne.sms.service.*;
 import com.wayne.sms.util.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -27,25 +30,60 @@ import java.util.Date;
 @Controller
 public class BaseController
 {
-//	//系统用户
-//	@Autowired
-//	public SysUserService sysUserService;
-//
-//	//系统角色
-//	@Autowired
-//	public SysRoleService sysRoleService;
-//
-//	//权限
-//	@Autowired
-//	public SysPermissionService sysPermissionService;
-//
-//	//文件上传
-//	@Autowired
-//	public SysFileService sysFileService;
-//
-//	//文件存储管理表
-//	@Autowired
-//	public SysFileDatasService sysFileDatasService;
+    @Autowired
+    public TeacherCourseService teacherCourseService;
+
+    @Autowired
+    public UserLoginService userloginService;
+
+    @Autowired
+    public StudentService studentService;
+
+    @Autowired
+    public TeacherService teacherService;
+
+    @Autowired
+    public CollegeService collegeService;
+
+    @Autowired
+    public MathScoreService mathScoreService;
+
+    @Autowired
+    public CourseService courseService;
+
+    @Autowired
+    public TeacherClazzMapper teacherClazzMapper;
+
+@Autowired
+public TeacherCourseMapper teacherCourseMapper;
+
+    @Autowired
+    public SaCollegeService saCollegeService;
+
+    @Autowired
+    public SaMajorService saMajorService;
+
+    @Autowired
+    public SaClazzService saClazzService;
+
+    @Autowired
+    public  SaStudentService saStudentService;
+
+    @Autowired
+    public StudentMapper studentMapper;
+
+    @Autowired
+    public ClazzMapper clazzMapper;
+
+    @Autowired
+    public MajorMapper majorMapper;
+
+    @Autowired
+    public CollegeMapper collegeMapper;
+
+    @Autowired
+    public CourseMapper courseMapper;
+
 
 
     /**

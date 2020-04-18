@@ -1,230 +1,320 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" 
+<html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.pollix.at/thymeleaf/shiro">
 <head th:replace="admin/common/html/tableHead :: head(~{::title},~{::link},~{::style})">
 
-<title th:text=${title}></title>
-<!-- 这儿引用单独的css link -->
-<!-- Ladda for Bootstrap 3按钮加载进度插件 -->
-<link rel="stylesheet" th:href="@{/static/admin/assets/js/button/ladda/ladda.min.css}">
-<!-- bootstrap-table表单样式 -->
-<link th:href="@{/static/admin/assets/js/bootstrap/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
-<!-- 用户界面自定义css -->
-<link th:href="@{/static/admin/user/css/user-add.css}" rel="stylesheet"/>
-<style type="text/css"></style>
+    <title th:text=${title}></title>
+    <!-- 这儿引用单独的css link -->
+    <!-- Ladda for Bootstrap 3按钮加载进度插件 -->
+    <link rel="stylesheet" th:href="@{/static/admin/assets/js/button/ladda/ladda.min.css}">
+    <!-- bootstrap-table表单样式 -->
+    <link th:href="@{/static/admin/assets/js/bootstrap/css/bootstrap-table/bootstrap-table.min.css}" rel="stylesheet"/>
+    <link th:href="@{/static/admin/assets/js/select2/css/select2.min.css}" rel="stylesheet"/>
+    <!-- 用户界面自定义css -->
+    <link th:href="@{/static/admin/user/css/user-add.css}" rel="stylesheet"/>
+    <style type="text/css"></style>
 </head>
 
 <body>
 
 <div class="content-wrap">
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="nest" id="elementClose">
-				<div class="">
-				</div>
-				<div class="body-nest" id="element">
-					<div class="panel-body">
-						<form  class="form-horizontal m" id="form-add">
-						
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">学号：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="stuId" name="stuId"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">姓名：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="stuName" name="stuName"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">学院：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="college" name="college"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">专业：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="major" name="major"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">班级：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="clazz" name="clazz"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">年级：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="grade" name="grade"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">课程名字：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="courseName" name="courseName"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">平时成绩：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="regularScore" name="regularScore"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">平时成绩占比：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="regularScorePer" name="regularScorePer"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">期末成绩：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="finalScore" name="finalScore"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">期末成绩占比：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="finalScorePer" name="finalScorePer"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">总评成绩：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="totalScore" name="totalScore"/>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-sm-3 control-label ">绩点：</label>
-										<div class="col-sm-8">
-											<input class="form-control" type="text" id="gpa" name="gpa"/>
-										</div>
-									</div>
-									
-			
-									<div class="form-group">
-										<div class="form-control-static col-sm-offset-9">
-											<button type="submit" class="btn btn-primary">提交</button>
-											<button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
-										</div>
-									</div>
-						 </form>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="nest" id="elementClose">
+                <div class="">
+                </div>
+                <div class="body-nest" id="element">
+                    <div class="panel-body">
+                        <form class="form-horizontal m" id="form-add">
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">学号：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" id="stuId" name="stuId"
+                                           disabled="disabled"/>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">学院：</label>
+                                <div class="col-sm-8">
+                                    <!--<input class="form-control" type="text" id="college" name="college"/>-->
+                                    <select class="form-control" id="college_select" name="college">
+                                        <option th:each="list : ${collegeList}"
+                                                th:text="${list.collegeName}"
+                                                th:value="${list.collegeId}">First
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">专业：</label>
+                                <div class="col-sm-8">
+                                    <!--<input class="form-control" type="text" id="major" name="major"/>-->
+                                    <select class="form-control" id="major_select" name="major">
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">班级：</label>
+                                <div class="col-sm-8">
+                                    <!--<input class="form-control" type="text" id="clazz" name="clazz"/>-->
+                                    <select class="form-control" id="clazz_select" name="clazz">
+
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">姓名：</label>
+                                <div class="col-sm-8">
+                                    <!--<input class="form-control" type="text" id="stuName" name="stuName"/>-->
+                                    <select class="form-control" id="student_select" name="stuName">
+
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">年级：</label>
+                                <div class="col-sm-8">
+                                    <!--<input class="form-control" type="text" id="grade" name="grade"/>-->
+                                    <select class="form-control" id="grade-select" name="grade">
+                                        <option value="2017">2017</option>
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">课程名字：</label>
+                                <div class="col-sm-8">
+                                    <!--<input class="form-control" type="text" id="courseName" name="courseName"/>-->
+                                    <select class="form-control selectpicker" id="course-select" name="courseName">
+                                        <option th:each="list : ${courseList}"
+                                                th:text="${list.courseName}"
+                                                th:value="${list.courseName}">First
+                                        </option>
+                                        <!--<option value="高等数学(1)">高等数学(1)</option>-->
+                                        <!--<option value="高等数学(2)">高等数学(2)</option>-->
+                                    </select>
+                                </div>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">平时成绩：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" id="regularScore" name="regularScore"/>
+                                </div>
+                            </div>
+
+
+                            <!--<div class="form-group">-->
+                            <!--<label class="col-sm-3 control-label ">平时成绩占比：</label>-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<input class="form-control" type="text" id="regularScorePer"-->
+                            <!--name="regularScorePer"/>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label ">期末成绩：</label>
+                                <div class="col-sm-8">
+                                    <input class="form-control" type="text" id="finalScore" name="finalScore"/>
+                                </div>
+                            </div>
+
+
+                            <!--<div class="form-group">-->
+                            <!--<label class="col-sm-3 control-label ">期末成绩占比：</label>-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<input class="form-control" type="text" id="finalScorePer" name="finalScorePer"/>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+
+                            <!--<div class="form-group">-->
+                            <!--<label class="col-sm-3 control-label ">总评成绩：</label>-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<input class="form-control" type="text" id="totalScore" name="totalScore"/>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+
+                            <!--<div class="form-group">-->
+                            <!--<label class="col-sm-3 control-label ">绩点：</label>-->
+                            <!--<div class="col-sm-8">-->
+                            <!--<input class="form-control" type="text" id="gpa" name="gpa"/>-->
+                            <!--</div>-->
+                            <!--</div>-->
+
+
+                            <div class="form-group">
+                                <div class="form-control-static col-sm-offset-9">
+                                    <button type="submit" class="btn btn-primary">提交</button>
+                                    <button onclick="$.modal.close()" class="btn btn-danger" type="button">关闭</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- 通用js -->
 <div th:include="admin/common/html/js :: onload_js">
-   
+
 </div>
 <!-- bootstarp 表格 -->
-<script th:src="@{/static/admin/assets/js/bootstrap/js/bootstrap-table/bootstrap-table.min.js}" type="text/javascript"></script>
-<script th:src="@{/static/admin/assets/js/bootstrap/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}" type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/bootstrap/js/bootstrap-table/bootstrap-table.min.js}"
+        type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/bootstrap/js/bootstrap-table/locale/bootstrap-table-zh-CN.min.js}"
+        type="text/javascript"></script>
 <script th:src="@{/static/admin/assets/js/bootstrap/js/base_list.js}" type="text/javascript"></script>
 
 
 <!-- 弹窗 -->
-<script  th:src="@{/static/admin/assets/js/layer/layer.js}" type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/layer/layer.js}" type="text/javascript"></script>
 <!-- 遮罩层 -->
-<script  th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
 <!-- jqueryForm序列化 -->
-<script  th:src="@{/static/js/jqueryFormSerializeJson.js}" type="text/javascript"></script>
+<script th:src="@{/static/js/jqueryFormSerializeJson.js}" type="text/javascript"></script>
+<script th:src="@{/static/admin/assets/js/select2/js/select2.full.min.js}" type="text/javascript"></script>
+
 <script type="text/javascript">
+    $(function () {
 
-$(function(){
-	 $(".MyDate").datetimepicker({
-		 	format: "yyyy-mm-dd hh:00:00",
-	        startDate: new Date(),
-	        autoclose: true,
-	        todayBtn: true,
-	        language: 'zh-CN',
-	        initialDate:new Date(),
-	        minView: 1      
-	    });
-	
-})
+        $("#form-add").validate({
 
-
-$("#form-add").validate({
-	rules:{
-		stuId:{
-			required:true,
-			minlength: 2,
-			maxlength: 20,
-			remote: {
-                url: rootPath + "/admin/mathScore/checkNameUnique",
-                type: "post",
-                dataType: "json",
-                dataFilter: function(data, type) {
-                    if (data == "0")
-                    	return true;
-                    else 
-                    	return false;
-                }
+            rules: {
+                regularScore: {
+                    required: true,
+                    max: 100,
+                    min: 0
+                },
+                finalScore: {
+                    required: true,
+                    max: 100,
+                    min: 0
+                },
+            },
+            submitHandler: function (form) {
+                add();
             }
-		}
-	},
-	messages: {
-        "stuId": {
-            remote: "已经存在"
-        }
-    },
-	submitHandler:function(form){
-		add();
-	}
-});
+        })
+    });
 
-/**
- * 用户添加方法
- */
-function add() {
-	var dataFormJson=$("#form-add").serialize();
-	$.ajax({
-		cache : true,
-		type : "POST",
-		url : rootPath + "/admin/mathScore/add",
-		data : dataFormJson,
-		async : false,
-		error : function(request) {
-			$.modal.alertError("系统错误");
-		},
-		success : function(data) {
-			$.operate.saveSuccess(data);
-		}
-	});
-}
+    /**
+     * 用户添加方法
+     */
+    function add() {
+        var dataFormJson = $("#form-add").serialize();
+        $.ajax({
+            cache: true,
+            type: "POST",
+            url: rootPath + "/admin/mathScore/add",
+            data: dataFormJson,
+            async: false,
+            error: function (request) {
+                $.modal.alertError("系统错误");
+            },
+            success: function (data) {
+                $.operate.saveSuccess(data);
+            }
+        });
+    }
 
+    //城市查询
+    function majorList() {
+        $("#major_select").html("");
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: window.rootPath + "/admin/collegeLinked/getMajor?cid=" + $("#college_select").val(),
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#major_select").append("<option value='" + data[i].majorId + "'>" + data[i].majorName + "</option>");
+
+                }
+                $("#major_select").select2({
+                    placeholder: "请选择"
+                }).on("change", function (e) {
+                    clazzList();
+                })
+
+            }
+        })
+    }
+
+    //区县查询
+    function clazzList() {
+        $("#clazz_select").html("");
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: window.rootPath + "/admin/collegeLinked/getClazz?mid=" + $("#major_select").val(),
+            success: function (data) {
+                // $("#clazz_select").append("<option value='0'>全部班级</option>");
+                for (var i = 0; i < data.length; i++) {
+                    $("#clazz_select").append("<option value='" + data[i].clazzId + "'>" + data[i].clazzName + "</option>");
+                }
+                $("#clazz_select").select2({
+                    placeholder: "请选择"
+                }).on("change", function (e) {
+                    studentList();
+                })
+            }
+        })
+    }
+
+    //地区查询
+    function studentList() {
+        $("#student_select").html("");
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: window.rootPath + "/admin/collegeLinked/getStudent?clid=" + $("#clazz_select").val(),
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#student_select").append("<option value='" + data[i].stuId + "'>" + data[i].name + "</option>");
+                }
+                $("#student_select").select2({
+                    placeholder: "请选择"
+                }).on("change", function (e) {
+                    setStuId();
+                })
+            }
+        })
+    }
+
+    function setStuId() {
+        var stuId = $("#student_select").val();
+        $("#stuId").val(stuId);
+    }
+
+
+    $(function () {
+        $("#college_select").select2({
+            placeholder: "请选择"
+        }).on("change", function (e) {
+            majorList();
+        });
+        $("#grade-select").select2({
+            placeholder: "请选择"
+        });
+        $("#course-select").select2({
+            placeholder: "请选择"
+        });
+    })
 
 </script>
 

@@ -27,4 +27,6 @@ public interface UserLoginService {
 
     int deleteByPrimaryKey(String ids);
 
+    PageInfo<Userlogin> listOneTeacher(Tablepar tablepar,String teacherId);
+
 }

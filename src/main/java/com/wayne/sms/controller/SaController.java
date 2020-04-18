@@ -1,6 +1,8 @@
 package com.wayne.sms.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.wayne.sms.dao.CollegeMapper;
+import com.wayne.sms.dao.TeacherMapper;
 import com.wayne.sms.domain.AjaxResult;
 import com.wayne.sms.model.TableSplitResult;
 import com.wayne.sms.model.Tablepar;
@@ -34,29 +36,21 @@ public class SaController extends BaseController {
     private String SaMajor = "admin/saMajor";
 
     private String SaClazz = "admin/saClazz";
-    
+
+    private String teacherSaClazz = "teacher/saClazz";
+
     private String SaStudent = "admin/saStudent";
+    private String teacherSaStudent = "teacher/saStudent";
+
+    public  String teacherId=null;
 
     @Autowired
-    private SaCollegeService saCollegeService;
+    private TeacherMapper teacherMapper;
 
     @Autowired
-    private SaMajorService saMajorService;
+    private CollegeMapper collegeMapper;
 
-    @Autowired
-    private SaClazzService saClazzService;
 
-    @Autowired
-    private  SaStudentService saStudentService;
-
-    @Autowired
-    private CollegeService collegeService;
-
-    @Autowired
-    private CourseService courseService;
-
-    @Autowired
-    private MathScoreService mathScoreService;
     /*===================================管理员模块分析开始=============================================*/
 
     /*=====================学院成绩分析========================*/
@@ -125,6 +119,7 @@ public class SaController extends BaseController {
     @GetMapping("/admin/refreshStdMajor")
     @ResponseBody
     public AjaxResult refreshStdMajor(){
+        //Controller层
         System.out.println("看看专业成绩标准分进来没");
         int i = saMajorService.refreshStdMajor();
         if (i==0){
@@ -248,29 +243,32 @@ public class SaController extends BaseController {
     }
 
 
-    /*===================================管理员模块分析结束=============================================*/
-
+    /**
+     * 更新成绩分析表
+     * @return
+     */
     @GetMapping("/admin/refreshScoreAnalysis")
     @ResponseBody
     public AjaxResult refreshSA(){
         System.out.println("看看成绩分析方法进来没");
-        /**
-         * 更新学院分析表：
-         * 1.从math_score表中查询出list<sacollege>对象
-         * 2.删除原有数据
-         * 3.将sascollege插入 sacollege表
-         */
-        //更新学院成绩分析数据
+        //更新学院成绩分析数据：
+        //1.从math_score成绩表中重新查询出list<sacollege>对象，动态生成。
         List<SaCollege> saColleges = mathScoreService.selectAsSaCollege();
+        //2.清除saCollege学院成绩分析表的数据
         saCollegeService.clearTable();
+        //3.将重新生成的list<sacollege>对象插入到saCollege表中
         int updateSaCollege = saCollegeService.updateSaCollege(saColleges);
 
         //更新专业成绩分析数据
+        //1.从math_score成绩表中重新查询出List<SaMajor>对象，动态生成。
         List<SaMajor> saMajors = mathScoreService.selectAsSaMajor();
+        //2.清除saMajor专业成绩分析表的数据
         saMajorService.clearTable();
+        //3.将重新生成的List<SaMajor>对象插入到saCollege表中
         int updateSaMajor = saMajorService.updateSaMajor(saMajors);
 
         //更新班级成绩分析数据
+
         List<SaClazz> saClazzes = mathScoreService.selectAsSaClazz();
         saClazzService.clearTable();
         int updateSaClazz = saClazzService.updateSaClazz(saClazzes);
@@ -280,13 +278,84 @@ public class SaController extends BaseController {
         saStudentService.clearTable();
         int updateSaStudent = saStudentService.updateSaStudent(saStudents);
 
-
         if (updateSaClazz==0 || updateSaMajor==0 || updateSaCollege == 0 || updateSaStudent == 0){
             return AjaxResult.error();
         }else
 
-        return AjaxResult.success();
+            return AjaxResult.success();
 
     }
+
+    /*===================================管理员模块分析结束=============================================*/
+
+
+
+    /*===================================教师分析模块开始=============================================*/
+
+
+
+    @GetMapping("/teacher/saClazz/view.html")
+    public String getTeacherSaClazzView(ModelMap model,HttpServletRequest request,String tid)
+    {
+        String str="班级成绩分析概况";
+        teacherId=tid;
+        setTitle(model, new TitleVo("列表", str+"管理", true,"欢迎进入"+str+"页面", true, false));
+
+        //增加教师任教科目
+        TeacherCourseExample example = new TeacherCourseExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
+        List<TeacherCourse> teacherCourseList = teacherCourseMapper.selectByExample(example);
+        model.addAttribute("teacherCourseList", teacherCourseList);
+
+        //增加教师的班级
+        TeacherClazzExample example1 = new TeacherClazzExample();
+        example1.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(example1);
+        model.addAttribute("teacherClazzes", teacherClazzes);
+        return teacherSaClazz + "/list";
+    }
+
+    @PostMapping("teacher/saClazz/list")
+    @ResponseBody
+    public Object getTeacherSaClazzList(Tablepar tablepar, String searchText,String grade,String courseName,String order,String clid){
+        PageInfo<SaClazz> page=saClazzService.listByTeacher(tablepar,searchText,grade,courseName,order,teacherId,clid) ;
+        TableSplitResult<SaClazz> result=new TableSplitResult<SaClazz>(page.getPageNum(), page.getTotal(), page.getList());
+        return  result;
+    }
+
+
+    /*================================教师中的学生成绩分析=========================================*/
+
+    @GetMapping("/teacher/saStudent/view.html")
+    public String teacherGetSaStudentView(ModelMap model,HttpServletRequest request,String tid)
+    {
+        String str="学生成绩分析";
+        teacherId = tid;
+        setTitle(model, new TitleVo("列表", str+"管理", true,"欢迎进入"+str+"页面", true, false));
+        //增加教师任教科目
+        TeacherCourseExample example = new TeacherCourseExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(tid));
+        List<TeacherCourse> teacherCourseList = teacherCourseMapper.selectByExample(example);
+        model.addAttribute("teacherCourseList", teacherCourseList);
+
+        //增加教师的班级
+        TeacherClazzExample example1 = new TeacherClazzExample();
+        example1.createCriteria().andTeacherIdEqualTo(Long.parseLong(tid));
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(example1);
+        model.addAttribute("teacherClazzes", teacherClazzes);
+
+        return teacherSaStudent + "/list";
+    }
+
+    @PostMapping("teacher/saStudent/list")
+    @ResponseBody
+    public Object teacherGetSaStudentList(Tablepar tablepar, String searchText,String grade,String courseName,String clid,String order){
+
+        PageInfo<SaStudent> page=saStudentService.listByTeacher(tablepar,searchText,teacherId,grade,courseName,clid,order) ;
+        TableSplitResult<SaStudent> result=new TableSplitResult<SaStudent>(page.getPageNum(), page.getTotal(), page.getList());
+        return  result;
+    }
+
+    /*===================================教师分析模块结束=============================================*/
 
 }

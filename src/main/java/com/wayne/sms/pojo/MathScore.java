@@ -458,4 +458,24 @@ public class MathScore implements Serializable {
     public void setGpa(Double gpa) {
         this.gpa = gpa;
     }
+
+    @Override
+    public String toString() {
+        return "MathScore{" +
+                "id=" + id +
+                ", stuId=" + stuId +
+                ", stuName='" + stuName + '\'' +
+                ", college='" + college + '\'' +
+                ", major='" + major + '\'' +
+                ", clazz='" + clazz + '\'' +
+                ", grade=" + grade +
+                ", courseName='" + courseName + '\'' +
+                ", regularScore=" + regularScore +
+                ", regularScorePer=" + regularScorePer +
+                ", finalScore=" + finalScore +
+                ", finalScorePer=" + finalScorePer +
+                ", totalScore=" + totalScore +
+                ", gpa=" + gpa +
+                '}';
+    }
 }

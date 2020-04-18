@@ -3,6 +3,7 @@ package com.wayne.sms.controller;
 import com.wayne.sms.dao.ClazzMapper;
 import com.wayne.sms.dao.CollegeMapper;
 import com.wayne.sms.dao.MajorMapper;
+import com.wayne.sms.dao.TeacherMapper;
 import com.wayne.sms.domain.AjaxResult;
 import com.wayne.sms.model.TitleVo;
 import com.wayne.sms.pojo.*;
@@ -38,24 +39,12 @@ public class EchartsController extends BaseController {
 
     private String SaStudent = "admin/saStudent";
 
+    private String teacherSaClazz = "teacher/saClazz";
 
-    @Autowired
-    private SaCollegeService saCollegeService;
+    private String teacherSaStudent = "teacher/saStudent";
 
-    @Autowired
-    private SaMajorService saMajorService;
 
-    @Autowired
-    private SaClazzService saClazzService;
-
-    @Autowired
-    private SaStudentService saStudentService;
-
-    @Autowired
-    private CollegeService collegeService;
-
-    @Autowired
-    private CourseService courseService;
+    private String teacherId;
 
     @Autowired
     private ClazzMapper clazzMapper;
@@ -65,8 +54,9 @@ public class EchartsController extends BaseController {
 
     @Autowired
     private MajorMapper majorMapper;
+
     @Autowired
-    private MathScoreService mathScoreService;
+    private  TeacherMapper teacherMapper;
 
     /*===================================管理员模块分析开始=============================================*/
 
@@ -95,12 +85,12 @@ public class EchartsController extends BaseController {
     @ResponseBody
     public AjaxResult saCollegeBarView(String grade, String courseName) {
         List<String> xAxisData = new ArrayList<>();
-
+        //先创建好集合对需要平时成绩，期末成绩，总评成绩的权值和总评标准差进行封装
         List<BigDecimal> avgRegularScoreList = new ArrayList<>();
         List<BigDecimal> avgFinalScoreList = new ArrayList<>();
         List<BigDecimal> avgTotalScoreList = new ArrayList<>();
         List<BigDecimal> stdTotalScoreList = new ArrayList<>();
-        if (grade != null && courseName != null) {
+        if (grade != null && courseName != null) {//根据年级和科目对数据进行查询
             List<SaCollege> saCollegeList = saCollegeService.selectSaCollegeByCourseAndGrade(courseName, grade);
             for (SaCollege saCollege : saCollegeList) {
                 xAxisData.add(saCollege.getCollege());
@@ -122,6 +112,7 @@ public class EchartsController extends BaseController {
         if (grade == null) {
             return AjaxResult.error("请选择年级！");
         }
+        //将查询的数据通过数据载体传输到页面的ajax请求。
         return AjaxResult.success().put("xAxisData", xAxisData).put("seriesData", seriesData);
     }
 
@@ -157,16 +148,12 @@ public class EchartsController extends BaseController {
     @GetMapping("/admin/saCollege/pie")
     @ResponseBody
     public Object SaCollegePie(ModelMap model, String courseName, String cid, String grade) {
-        List<String> legendData = new ArrayList<>();
+        //创建一个List<Map<String, Object>>对象封装数据
         List<Map<String, Object>> seriesData = new ArrayList<>();
+        //当考试科目、学院名字和年级不为空是才能进行查询
         if (courseName != null && cid != null && grade != null) {
             List<SaCollege> saCollegeNum = saCollegeService.findByCollegeId(courseName, cid, grade);
             SaCollege saCollege = saCollegeNum.get(0);
-            legendData.add("成绩优秀人数");
-            legendData.add("成绩良好人数");
-            legendData.add("成绩中等人数");
-            legendData.add("成绩及格人数");
-            legendData.add("成绩不及格人数");
             Map<String, Object> map = new HashMap<>();
             map.put("name", "成绩优秀人数");
             map.put("value", saCollege.getSumExcellent());
@@ -188,6 +175,7 @@ public class EchartsController extends BaseController {
             seriesData.add(map4);
             seriesData.add(map5);
         }
+        //当部分信息为空则弹出相应提示框
         if (courseName == null) {
             return AjaxResult.error("请选择科目");
         }
@@ -197,7 +185,7 @@ public class EchartsController extends BaseController {
         if (grade == null) {
             return AjaxResult.error("请选择年级");
         }
-        return AjaxResult.success().put("legendData", legendData).put("seriesData", seriesData);
+        return AjaxResult.success().put("seriesData", seriesData);
     }
 
 
@@ -218,18 +206,12 @@ public class EchartsController extends BaseController {
     @GetMapping("/admin/saMajor/pie")
     @ResponseBody
     public Object SaMajorPie(ModelMap model, String courseName, String cid, String mid, String grade) {
-        List<String> legendData = new ArrayList<>();
         List<Map<String, Object>> seriesData = new ArrayList<>();
         if (courseName != null && mid != null && cid != null && grade != null) {
             List<SaMajor> saMajors = saMajorService.findByMajorId(courseName, cid, mid, grade);
             SaMajor saMajor = saMajors.get(0);
-            legendData.add("成绩优秀人数");
-            legendData.add("成绩良好人数");
-            legendData.add("成绩中等人数");
-            legendData.add("成绩及格人数");
-            legendData.add("成绩不及格人数");
 
-            System.out.println("这是专业数据" + saMajor);
+//            System.out.println("这是专业数据" + saMajor);
             Map<String, Object> map = new HashMap<>();
             map.put("name", "成绩优秀人数");
             map.put("value", saMajor.getSumExcellent());
@@ -260,7 +242,7 @@ public class EchartsController extends BaseController {
         if (grade == null) {
             return AjaxResult.error("请选择年级");
         }
-        return AjaxResult.success().put("legendData", legendData).put("seriesData", seriesData);
+        return AjaxResult.success().put("seriesData", seriesData);
     }
 
     @GetMapping("/admin/saMajor/bar.html")
@@ -331,21 +313,12 @@ public class EchartsController extends BaseController {
     @GetMapping("/admin/saClazz/pie")
     @ResponseBody
     public Object SaClazzPie(ModelMap model, String courseName, String cid, String mid, String grade, String clid) {
-        System.out.println("看看有没course传进来:" + courseName);
-        System.out.println("看看有没clid传进来:" + clid);
 
-        List<String> legendData = new ArrayList<>();
         List<Map<String, Object>> seriesData = new ArrayList<>();
         if (courseName != null && clid != null && grade != null) {
             List<SaClazz> saClazzes = saClazzService.findByClazzId(courseName, grade, clid);
             SaClazz saClazz = saClazzes.get(0);
-            legendData.add("成绩优秀人数");
-            legendData.add("成绩良好人数");
-            legendData.add("成绩中等人数");
-            legendData.add("成绩及格人数");
-            legendData.add("成绩不及格人数");
 
-            System.out.println("这是专业数据" + saClazz);
             Map<String, Object> map = new HashMap<>();
             map.put("name", "成绩优秀人数");
             map.put("value", saClazz.getSumExcellent());
@@ -370,13 +343,13 @@ public class EchartsController extends BaseController {
         if (courseName == null) {
             return AjaxResult.error("请选择科目");
         }
-        if (clid == null || mid == null || cid == null) {
-            return AjaxResult.error("请选择班级");
-        }
+//        if (clid == null || mid == null || cid == null) {
+//            return AjaxResult.error("请选择班级");
+//        }
         if (grade == null) {
             return AjaxResult.error("请选择年级");
         }
-        return AjaxResult.success().put("legendData", legendData).put("seriesData", seriesData);
+        return AjaxResult.success().put("seriesData", seriesData);
     }
 
     @GetMapping("/admin/saClazz/bar.html")
@@ -430,7 +403,7 @@ public class EchartsController extends BaseController {
 
     }
 
-    /*========================================学生个人成绩分析=============================================================*/
+    /*========================================学生个人成绩分析=================================================*/
     @GetMapping("/admin/saStudent/bar.html")
     public String getSaStudentBarView(ModelMap model, HttpServletRequest request) {
         String str = "学生成绩对比";
@@ -446,9 +419,11 @@ public class EchartsController extends BaseController {
     @GetMapping("/admin/saStudent/bar")
     @ResponseBody
     public AjaxResult getSaStudentBar(String grade,String courseName,String cid,String mid,String clid,String sid){
+        //检验输入信息
         if (mid==null || clid==null|| sid==null ||grade==null ||courseName==null){
             return AjaxResult.error("请填好下拉框信息，并选定一位学生");
         }
+        //创建集合对象传输数据
         List seriesData = new ArrayList();
         List clazzScore = new ArrayList<>();
         List majorScore = new ArrayList<>();
@@ -457,8 +432,6 @@ public class EchartsController extends BaseController {
         //学生所在班级
         Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
         SaClazz saClazz =saClazzService.selectByCourseAndGradeAndClazzName(grade,courseName,clazz.getClazzName());
-//        System.out.println("学生所在班级"+clazz);
-//        System.out.println("学生所在班级数据"+saClazz);
         clazzScore.add(saClazz.getAvgRegularScore());
         clazzScore.add(saClazz.getAvgFinalScore());
         clazzScore.add(saClazz.getAvgTotalScore());
@@ -466,12 +439,11 @@ public class EchartsController extends BaseController {
         //学生所在专业
         Major major = majorMapper.selectByMajorId(Integer.parseInt(mid));
         SaMajor saMajor=saMajorService.selectByCourseAndGradeAndMajorName(grade,courseName,major.getMajorName());
-//        System.out.println("学生所在专业"+major);
-//        System.out.println("学生所在专业数据"+saMajor);
         majorScore.add(saMajor.getAvgRegularScore());
         majorScore.add(saMajor.getAvgFinalScore());
         majorScore.add(saMajor.getAvgTotalScore());
 
+        //学生所在学院
         College college = collegeMapper.selectByCollegeId(Integer.parseInt(cid));
         SaCollege saCollege = saCollegeService.selectByCourseAndGradeAndCollegeName(grade,courseName,college.getCollegeName());
         collegeScore.add(saCollege.getAvgRegularScore());
@@ -480,7 +452,6 @@ public class EchartsController extends BaseController {
 
 
         SaStudent saStudent=saStudentService.selectByStuId(Long.parseLong(sid));
-//        System.out.println("学生个人信息"+saStudent);
         studentScore.add(saStudent.getRegularScore());
         studentScore.add(saStudent.getFinalScore());
         studentScore.add(saStudent.getTotalScore());
@@ -491,4 +462,77 @@ public class EchartsController extends BaseController {
         seriesData.add(studentScore);
         return AjaxResult.success().put("seriesData",seriesData);
     }
+
+
+
+/*=======================================教师部分=======================================================================*/
+
+    /*=====================教师班级成绩分析========================*/
+    @GetMapping("/teacher/saClazz/pie.html")
+    public String teacherSaClazzPieView(ModelMap model, HttpServletRequest request,String tid) {
+        String str = "班级成绩占比";
+        setTitle(model, new TitleVo("视图分析", str + "分析", true, "欢迎进入" + str + "页面", true, false));
+            teacherId = tid;
+        //增加教师任教科目
+        TeacherCourseExample example = new TeacherCourseExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(tid));
+        List<TeacherCourse> teacherCourseList = teacherCourseMapper.selectByExample(example);
+        model.addAttribute("teacherCourseList", teacherCourseList);
+
+        //增加教师的班级
+        TeacherClazzExample example1 = new TeacherClazzExample();
+        example1.createCriteria().andTeacherIdEqualTo(Long.parseLong(tid));
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(example1);
+        model.addAttribute("teacherClazzes", teacherClazzes);
+
+        return teacherSaClazz + "/Pie";
+    }
+
+
+
+    @GetMapping("/teacher/saClazz/bar.html")
+    public String teacherSaClazzBarView(ModelMap model, HttpServletRequest request,String tid) {
+        String str = "班级成绩对比";
+        setTitle(model, new TitleVo("视图分析", str + "分析", true, "欢迎进入" + str + "页面", true, false));
+        //增加教师任教科目
+        TeacherCourseExample example = new TeacherCourseExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(tid));
+        List<TeacherCourse> teacherCourseList = teacherCourseMapper.selectByExample(example);
+        model.addAttribute("teacherCourseList", teacherCourseList);
+        //增加教师所在学院
+        Teacher teacher = teacherMapper.selectByPrimaryKey(Long.parseLong(tid));
+        String collegeName = teacher.getCollegeName();
+        CollegeExample collegeExample = new CollegeExample();
+        collegeExample.createCriteria().andCollegeNameEqualTo(collegeName);
+        List<College> collegeList = collegeMapper.selectByExample(collegeExample);
+        model.addAttribute("collegeList", collegeList);
+
+        return teacherSaClazz + "/Bar";
+    }
+
+
+    /*========================================学生个人成绩分析=============================================================*/
+    @GetMapping("/teacher/saStudent/bar.html")
+    public String teacherGetSaStudentBarView(ModelMap model, HttpServletRequest request,String tid) {
+        String str = "学生成绩对比";
+        setTitle(model, new TitleVo("视图分析", str + "分析", true, "欢迎进入" + str + "页面", true, false));
+
+        //增加教师任教科目
+        TeacherCourseExample example = new TeacherCourseExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(tid));
+        List<TeacherCourse> teacherCourseList = teacherCourseMapper.selectByExample(example);
+        model.addAttribute("teacherCourseList", teacherCourseList);
+
+        //增加教师所在学院
+        Teacher teacher = teacherMapper.selectByPrimaryKey(Long.parseLong(tid));
+        String collegeName = teacher.getCollegeName();
+        CollegeExample collegeExample = new CollegeExample();
+        collegeExample.createCriteria().andCollegeNameEqualTo(collegeName);
+        List<College> collegeList = collegeMapper.selectByExample(collegeExample);
+        model.addAttribute("collegeList", collegeList);
+
+        return teacherSaStudent+ "/Bar";
+    }
+
+
 }

@@ -1,4 +1,5 @@
 package com.wayne.sms.controller;
+
 import com.google.code.kaptcha.Constants;
 import com.wayne.sms.domain.AjaxResult;
 import com.wayne.sms.model.TitleVo;
@@ -38,16 +39,15 @@ import java.util.List;
 @Controller
 public class LoginController extends BaseController {
 
-    @RequestMapping(value = {"","index"})
-    public String login(Model model){
+    @RequestMapping(value = {"", "index"})
+    public String login(Model model) {
         return "login";
     }
 
 
-
-
     /**
      * 请求到登陆界面
+     *
      * @param modelMap
      * @return
      */
@@ -57,10 +57,6 @@ public class LoginController extends BaseController {
             if ((null != SecurityUtils.getSubject() && SecurityUtils.getSubject().isAuthenticated()) || SecurityUtils.getSubject().isRemembered()) {
                 return "redirect:/admin/index";
             } else {
-//                System.out.println("--进行登录验证..验证开始");
-//                V2Config.setRollVerification(true);
-//                modelMap.put("RollVerification",V2Config.getRollVerification());
-//                System.out.println("V2Config.getRollVerification()>>>"+V2Config.getRollVerification());
                 return "login";
             }
         } catch (Exception e) {
@@ -71,6 +67,7 @@ public class LoginController extends BaseController {
 
     /**
      * 用户登陆验证
+     *
      * @param password
      * @param code
      * @param redirectAttributes
@@ -80,53 +77,42 @@ public class LoginController extends BaseController {
      */
     @RequestMapping("/admin/login")
     @ResponseBody
-    public AjaxResult login(@RequestParam(value = "username")String user_Id, @RequestParam(value = "password") String password, String code, RedirectAttributes redirectAttributes, boolean rememberMe, HttpServletRequest request) {
+    public AjaxResult login(@RequestParam(value = "username") String user_Id, @RequestParam(value = "password") String password, String code, RedirectAttributes redirectAttributes, boolean rememberMe, HttpServletRequest request) {
         Long userId;
         try {
-            userId= Long.parseLong(user_Id);
-        }catch (Exception e){
-            return AjaxResult.error(500,"请输入正确的学号（数字）");
+            userId = Long.parseLong(user_Id);
+        } catch (Exception e) {
+            return AjaxResult.error(500, "请输入正确的学号（数字）");
         }
         Userlogin userlogin = new Userlogin();
         userlogin.setUserId(userId);
         userlogin.setPassword(password);
-
         String scode = (String) request.getSession().getAttribute(Constants.KAPTCHA_SESSION_KEY);
-        System.out.println("这是生成的验证码"+scode);
-        Boolean yz ;
+        System.out.println("这是生成的验证码" + scode);
+        Boolean yz;
         yz = StringUtils.isNotEmpty(scode) && StringUtils.isNotEmpty(code) && scode.equals(code);
-
-//        if(scode==null) {//滚动验证
-//            yz=true;
-//            V2Config.setRollVerification(false);
-//        }else {//图片验证
-//            yz = StringUtils.isNotEmpty(scode) && StringUtils.isNotEmpty(code) && scode.equals(code);
-//        }
-        if(!yz){
+        if (!yz) {
             return AjaxResult.error(500, "验证码不正确!");
         }
-
         Subject subject = SecurityUtils.getSubject();
 
         UsernamePasswordToken token = new UsernamePasswordToken(String.valueOf(userId), password);
         try {
-            if (rememberMe){
+            if (rememberMe) {
                 token.setRememberMe(true);
             }
             subject.login(token);
-        }catch (UnknownAccountException uae) {
+        } catch (UnknownAccountException uae) {
             return AjaxResult.error(500, "账户不存在");
         } catch (IncorrectCredentialsException ice) {
             return AjaxResult.error(500, "用户名或密码不正确");
-        }catch (NumberFormatException e){
-            return AjaxResult.error(500,"请输入正确的学号和密码");
+        } catch (NumberFormatException e) {
+            return AjaxResult.error(500, "请输入正确的学号和密码");
         }
-
-//        System.out.println("看看这次是否是admin"+subject.hasRole("admin"));
-        if (subject.hasRole("teacher")){
-            return AjaxResult.successData(201,"欢迎来到教师页面");
-        }else if (subject.hasRole("student")){
-            return AjaxResult.successData(202,"欢迎来到学生界面");
+        if (subject.hasRole("teacher")) {
+            return AjaxResult.successData(201, "欢迎来到教师页面");
+        } else if (subject.hasRole("student")) {
+            return AjaxResult.successData(202, "欢迎来到学生界面");
         }
 
         return AjaxResult.success();
@@ -134,10 +120,11 @@ public class LoginController extends BaseController {
 
     /**
      * 退出登陆
+     *
      * @return
      */
     @GetMapping("/Loginout")
-    public String LoginOut(HttpServletRequest request, HttpServletResponse response){
+    public String LoginOut(HttpServletRequest request, HttpServletResponse response) {
         //在这里执行退出系统前需要清空的数据
         Subject subject = SecurityUtils.getSubject();
         //注销
@@ -147,24 +134,27 @@ public class LoginController extends BaseController {
 
 
     @RequestMapping("/error/403")
-    public String errorPage(){
+    public String errorPage() {
         return "error/403";
     }
 
     @GetMapping("admin/index")
     @RequiresRoles("admin")
     public String index(HttpServletRequest request) {
-        request.getSession().setAttribute("sessionUserName",ShiroUtils.getUser().getUserName());
+        request.getSession().setAttribute("sessionUserName", ShiroUtils.getUser().getUserName());
         return "admin/index";
 
     }
+
     @RequiresRoles("teacher")
     @GetMapping("teacher/index")
     public String index2(HttpServletRequest request) {
-        request.getSession().setAttribute("sessionUserName",ShiroUtils.getUser().getUserName());
+        request.getSession().setAttribute("sessionUserName", ShiroUtils.getUser().getUserName());
+        request.getSession().setAttribute("sessionUserId",ShiroUtils.getUser().getUserId());
         return "teacher/index";
 
     }
+
     @GetMapping("student/index")
     public String index3(HttpServletRequest request) {
         return "student/index";
@@ -172,14 +162,14 @@ public class LoginController extends BaseController {
 
 
     @GetMapping(value = {"teacher/main"})
-    public String testTeacher2(ModelMap map){
-        setTitle(map, new TitleVo("首页", "首页", true,"欢迎进入", true, false));
+    public String testTeacher2(ModelMap map) {
+        setTitle(map, new TitleVo("首页", "首页", true, "欢迎进入教师页面", true, false));
         return "/teacher/main";
     }
 
     @GetMapping("/admin/main")
     public String main(ModelMap map) {
-        setTitle(map, new TitleVo("首页", "首页", true,"欢迎进入", true, false));
+        setTitle(map, new TitleVo("首页", "首页", true, "欢迎进入管理员页面", true, false));
         return "admin/main";
     }
 

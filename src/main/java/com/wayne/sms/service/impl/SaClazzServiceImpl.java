@@ -2,16 +2,14 @@ package com.wayne.sms.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wayne.sms.dao.ClazzMapper;
-import com.wayne.sms.dao.MajorMapper;
-import com.wayne.sms.dao.SaClazzMapper;
-import com.wayne.sms.dao.StdClazzMapper;
+import com.wayne.sms.dao.*;
 import com.wayne.sms.model.Tablepar;
 import com.wayne.sms.pojo.*;
 import com.wayne.sms.service.SaClazzService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -30,12 +28,18 @@ public class SaClazzServiceImpl implements SaClazzService {
 
     @Autowired
     private ClazzMapper clazzMapper;
+
     @Autowired
     private MajorMapper majorMapper;
 
     @Autowired
     private StdClazzMapper stdClazzMapper;
 
+    @Autowired
+    private TeacherClazzMapper teacherClazzMapper;
+
+    @Autowired
+    private TeacherCourseMapper teacherCourseMapper;
 
     @Override
     public PageInfo<SaClazz> list(Tablepar tablepar, String name, String grade, String courseName,String mid,String clid, String order) {
@@ -120,6 +124,63 @@ public class SaClazzServiceImpl implements SaClazzService {
         saClazzExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andCourseNameEqualTo(courseName).andClazzEqualTo(clazzName);
         List<SaClazz> saClazzes = saClazzMapper.selectByExample(saClazzExample);
         return saClazzes.get(0);
+    }
+
+    @Override
+    public PageInfo<SaClazz> listByTeacher(Tablepar tablepar, String searchText, String grade, String courseName, String order, String teacherId,String clid) {
+        SaClazzExample testExample = new SaClazzExample();
+
+        if (order==null||"ID".equals(order)){
+            testExample.setOrderByClause("id ASC");
+        }else if ("total ASC".equals(order)){
+            testExample.setOrderByClause("avg_total_score ASC");
+        }else if("total DESC".equals(order)){
+            testExample.setOrderByClause("avg_total_score DESC");
+        }else if ("std ASC".equals(order)){
+            testExample.setOrderByClause("std_score ASC");
+        }else if ("std DESC".equals(order)){
+            testExample.setOrderByClause("std_score DESC");
+        }
+
+        //搜索教师所教班级
+        TeacherClazzExample teacherClazzExample = new TeacherClazzExample();
+        teacherClazzExample.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(teacherClazzExample);
+        List<String> clazzList = new ArrayList<>();
+        for (TeacherClazz teacherClazz : teacherClazzes) {
+            clazzList.add(teacherClazz.getClazzName() );
+        }
+        //查找教师任教科目
+        TeacherCourseExample example = new TeacherCourseExample();
+        example.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
+        List<String> courses = new ArrayList<>();
+        List<TeacherCourse> teacherCourseList = teacherCourseMapper.selectByExample(example);
+        for (TeacherCourse course : teacherCourseList) {
+            courses.add(course.getCourseName());
+        }
+        if(courseName==null || clid==null) {
+            testExample.createCriteria().andCourseNameIn(courses).andClazzIn(clazzList);
+        }
+
+        if(searchText!=null&&!"".equals(searchText)){
+            testExample.createCriteria().andClazzLike("%"+searchText+"%");
+        }
+        if (grade!=null && courseName!=null && clid!=null){
+            if (!"0".equals(clid)){
+                Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
+                testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andCourseNameEqualTo(courseName).andClazzEqualTo(clazz.getClazzName());
+            }else {
+                testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andCourseNameIn(courses).andClazzIn(clazzList);
+            }
+        }
+
+        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
+        List<SaClazz> list= saClazzMapper.selectByExample(testExample);
+        PageInfo<SaClazz> pageInfo = new PageInfo<SaClazz>(list);
+        return  pageInfo;
+
+
+
     }
 
 }

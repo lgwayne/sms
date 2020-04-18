@@ -25,4 +25,7 @@ public interface SaStudentService {
     int updateStdStudent();
 
     SaStudent selectByStuId(long i);
+
+    PageInfo<SaStudent> listByTeacher(Tablepar tablepar, String searchText, String tid, String grade, String courseName, String clid, String order);
+
 }

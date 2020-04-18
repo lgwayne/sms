@@ -59,29 +59,23 @@ public class StudentServiceImpl implements StudentService {
     public PageInfo<Student> search(Tablepar tablepar,String cid,String mid,String clid,String grade){
         StudentExample testExample=new StudentExample();
         testExample.setOrderByClause("stu_id ASC");
-        List<Student> list=null;
-
-        //有cid根据学院名字查
-        if (cid!=null && mid==null && clid==null && grade!=null){
-            College college = collegeMapper.selectByCollegeId(Integer.parseInt(cid));
-
-            testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andCollegeEqualTo(college.getCollegeName());
-        }else if (cid!=null &&!"".equals(cid) && mid!=null &&!"".equals(mid) && clid==null&& grade!=null){
-            Major major = majorMapper.selectByMajorId(Integer.parseInt(mid));
-
-            testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andMajorEqualTo(major.getMajorName());
-        }else if (cid!=null && mid!=null && clid!=null&& grade!=null){
+        List<Student> list=null;    //先创建集合装学生信息
+        if (cid!=null && mid!=null && clid!=null&& grade!=null){    //有clid，根据班级查学生信息
             Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
-
             testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andClazzEqualTo(clazz.getClazzName());
+        }else if (cid!=null && mid!=null && clid==null&& grade!=null){    //有mid根据专业查学生信息
+            Major major = majorMapper.selectByMajorId(Integer.parseInt(mid));
+            testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andMajorEqualTo(major.getMajorName());
+        }else if (cid!=null && mid==null && clid==null && grade!=null){    //有cid根据学院查学生信息
+            College college = collegeMapper.selectByCollegeId(Integer.parseInt(cid));
+            testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade)).andCollegeEqualTo(college.getCollegeName());
         }else {
-            testExample.setOrderByClause("stu_id ASC");
+            testExample.setOrderByClause("stu_id ASC");  //默认对学生进行学号的升序排序。
             PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
             list= studentMapper.selectByExample(testExample);
             PageInfo<Student> pageInfo = new PageInfo<Student>(list);
             return  pageInfo;
         }
-
         PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
         list= studentMapper.selectByExample(testExample);
         PageInfo<Student> pageInfo = new PageInfo<Student>(list);

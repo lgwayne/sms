@@ -77,8 +77,6 @@
                                                              th:text="${list.courseName}"
                                                              th:value="${list.courseName}">First
                                                      </option>
-                                                     <!--<option value="高等数学(1)">高等数学(1)</option>-->
-                                                     <!--<option value="高等数学(2)">高等数学(2)</option>-->
                                                  </select>
                                              </div>
                                          </div>
@@ -124,17 +122,18 @@
                                          <div class="form-group">
                                              <label class="col-sm-4 control-label ">排序：</label>
                                              <div class="col-sm-8">
-                                                 <select class="form-control" id="scoreOder" name="scoreOder">
+                                                 <select class="form-control" id="scoreOder" name="order">
                                                      <option value="ID">默认</option>
-                                                     <option value="ASC">绩点：低—>高</option>
-                                                     <option value="DESC">绩点：高—>低</option>
+                                                     <option value="total ASC">总评成绩：低—>高</option>
+                                                     <option value="total DESC">总评成绩：高—>低</option>
+                                                     <option value="std ASC">标准分：低—>高</option>
+                                                     <option value="std DESC">标准分：高—>低</option>
                                                  </select>
                                              </div>
                                          </div>
 
                                      </div>
-                                     <div class="col-md-4 col-sm-3">
-                                     </div>
+                                     <div class="col-md-4 col-sm-3"></div>
                                      <div class="col-md-4 col-sm-3">
                                          <button  onclick="$.table.search(this)" class="btn btn-success"
                                                   type="button"><i class="fa fa-search"></i>&nbsp;搜索
@@ -144,13 +143,12 @@
 
                              </form>
                          </div>
-                         >
                         </div>
                 	<!-- END搜索条件 -->
                     <!-- 空白页开始-->
                     <div class="nest" id="Blank_PageClose">
                         <div class="title-alt">
-                            <h6>表单</h6>
+                            <h6>学生成绩分析概况表</h6>
                             <div class="titleClose">
                                 <a class="gone" href="#Blank_PageClose">
                                     <span class="entypo-cancel"></span>
@@ -166,12 +164,7 @@
                         <div class="body-nest" id="Blank_Page_Content">
                             <!-- 工具条 -->
                             <div class="btn-group hidden-xs" id="exampleTableEventsToolbar" role="group">
-                            	<button onclick="$.operate.add()" type="button" class="btn btn-primary">
-                                    <span class="entypo-plus-squared"></span>&nbsp;&nbsp;新增
-                                </button>
-                               <button onclick="$.operate.batRemove()" type="button" class="btn btn-info">
-                                    <span class="entypo-trash"></span>&nbsp;&nbsp;删除
-                               </button>
+
                                 <button id="refresh" type="button" class="btn btn-success">
                                     <span class="fa fa-list-alt"></span>&nbsp;&nbsp;刷新标准分
                                 </button>

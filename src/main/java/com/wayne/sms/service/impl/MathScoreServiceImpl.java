@@ -2,10 +2,7 @@ package com.wayne.sms.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wayne.sms.dao.ClazzMapper;
-import com.wayne.sms.dao.CollegeMapper;
-import com.wayne.sms.dao.MajorMapper;
-import com.wayne.sms.dao.MathScoreMapper;
+import com.wayne.sms.dao.*;
 import com.wayne.sms.model.Tablepar;
 import com.wayne.sms.pojo.*;
 import com.wayne.sms.service.MathScoreService;
@@ -13,6 +10,7 @@ import com.wayne.sms.support.Convert;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,47 +36,43 @@ public class MathScoreServiceImpl implements MathScoreService {
     @Autowired
     private ClazzMapper clazzMapper;
 
+    @Autowired
+    private TeacherClazzMapper teacherClazzMapper;
+
 
     @Override
-    public PageInfo<MathScore> list(Tablepar tablepar, String name, String cid, String mid, String clid, String grade, String courseName,String scoreOder) {
-        MathScoreExample testExample = new MathScoreExample();
-        if (scoreOder==null||"ID".equals(scoreOder)){
-            testExample.setOrderByClause("id ASC");
-        }else if ("ASC".equals(scoreOder)){
-            testExample.setOrderByClause("total_score ASC");
-        }else if("DESC".equals(scoreOder)){
-            testExample.setOrderByClause("total_score DESC");
+    public PageInfo<MathScore> list(Tablepar tablepar, String name, String cid, String mid, String clid, String grade, String courseName, String scoreOder) {
+        MathScoreExample testExample = new MathScoreExample();//根据Example对象来添加筛选条件
+        if (scoreOder == null || "ID".equals(scoreOder)) {
+            testExample.setOrderByClause("id ASC");//根据id默认升序排序
+        } else if ("ASC".equals(scoreOder)) {
+            testExample.setOrderByClause("total_score ASC");//根据总评成绩程序排序
+        } else if ("DESC".equals(scoreOder)) {
+            testExample.setOrderByClause("total_score DESC");//根据总评成绩降序排序
         }
-
-
         if (name != null && !"".equals(name)) {
             testExample.createCriteria().andStuNameLike("%" + name + "%");
         }
-
-        if (grade != null && courseName != null && cid != null && mid != null && clid != null){
+        if (grade != null && courseName != null && cid != null && mid != null && clid != null) {
             Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
             testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade)).andClazzEqualTo(clazz.getClazzName());
-        }else
-        if (grade != null && courseName != null && cid != null && mid != null && clid == null) {
+        } else if (grade != null && courseName != null && cid != null && mid != null && clid == null) {
             Major major = majorMapper.selectByMajorId(Integer.parseInt(mid));
             testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade)).andMajorEqualTo(major.getMajorName());
-        }else
-        if (grade != null & courseName != null && cid != null && mid == null && clid == null) {
+        } else if (grade != null & courseName != null && cid != null && mid == null && clid == null) {
             College college = collegeMapper.selectByCollegeId(Integer.parseInt(cid));
             testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade)).andCollegeEqualTo(college.getCollegeName());
-        }else
-
-        if (grade != null & courseName != null) {
+        } else if (grade != null & courseName != null) {
             testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade));
-        }else
-        //有课程名
-        if (courseName != null) {
-            testExample.createCriteria().andCourseNameEqualTo(courseName);
-        }else
-        //有年级
-        if (grade != null) {
-            testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade));
-        }
+        } else
+            //有课程名
+            if (courseName != null) {
+                testExample.createCriteria().andCourseNameEqualTo(courseName);
+            } else
+                //有年级
+                if (grade != null) {
+                    testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade));
+                }
         PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
         List<MathScore> list = mathScoreMapper.selectByExample(testExample);
         PageInfo<MathScore> pageInfo = new PageInfo<MathScore>(list);
@@ -142,5 +136,47 @@ public class MathScoreServiceImpl implements MathScoreService {
     @Override
     public List<SaStudent> selectAsSaStudent() {
         return mathScoreMapper.selectAsSaStudent();
+    }
+
+    @Override
+    public PageInfo<MathScore> listByTeacher(Tablepar tablepar,String teacherId, String searchText, String clid, String grade, String courseName, String scoreOder) {
+        MathScoreExample testExample = new MathScoreExample();//根据Example对象来添加筛选条件
+        TeacherClazzExample teacherClazzExample = new TeacherClazzExample();
+        teacherClazzExample.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
+
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(teacherClazzExample);
+        List<String> clazzList = new ArrayList<>();
+        for (TeacherClazz teacherClazz : teacherClazzes) {
+            clazzList.add(teacherClazz.getClazzName() );
+        }
+        if(clid==null) {
+            testExample.createCriteria().andClazzIn(clazzList);
+        }
+        if (scoreOder == null || "ID".equals(scoreOder)) {
+            testExample.setOrderByClause("id ASC");//根据id默认升序排序
+        } else if ("ASC".equals(scoreOder)) {
+            testExample.setOrderByClause("total_score ASC");//根据总评成绩程序排序
+        } else if ("DESC".equals(scoreOder)) {
+            testExample.setOrderByClause("total_score DESC");//根据总评成绩降序排序
+        }
+        if (searchText != null && !"".equals(searchText)) {
+            testExample.createCriteria().andStuNameLike("%" + searchText + "%");
+        }
+
+        if (grade != null && courseName != null && clid != null) {
+            Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
+            System.out.println("这里是mapper的clid"+clazz);
+            testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade)).andClazzEqualTo(clazz.getClazzName());
+        } else if (grade != null & courseName != null) {
+            testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade));
+        } else if (courseName != null) {
+            testExample.createCriteria().andCourseNameEqualTo(courseName);
+        } else if (grade != null) {
+            testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade));
+        }
+        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
+        List<MathScore> list = mathScoreMapper.selectByExample(testExample);
+        PageInfo<MathScore> pageInfo = new PageInfo<MathScore>(list);
+        return pageInfo;
     }
 }

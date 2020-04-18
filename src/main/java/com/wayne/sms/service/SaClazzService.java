@@ -32,4 +32,5 @@ public interface SaClazzService {
 
     SaClazz selectByCourseAndGradeAndClazzName(String grade, String courseName, String clazzName);
 
+    PageInfo<SaClazz> listByTeacher(Tablepar tablepar, String searchText, String grade, String courseName, String order, String teacherId,String clid);
 }

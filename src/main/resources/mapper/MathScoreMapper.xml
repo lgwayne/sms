@@ -384,53 +384,53 @@
       course_name,
       college,
       CAST(
-              AVG(regular_score) AS DECIMAL (10, 2)
+        AVG(regular_score) AS DECIMAL (10, 2)
       ) AS 'avg_regular_score',
       CAST(
-              AVG(final_score) AS DECIMAL (10, 2)
+        AVG(final_score) AS DECIMAL (10, 2)
       ) AS 'avg_final_score',
       CAST(
-              STD(final_score) AS DECIMAL (10, 2)
+        STD(final_score) AS DECIMAL (10, 2)
       ) AS 'std_final_score',
       CAST(
-              AVG(total_score) AS DECIMAL (10, 2)
+        AVG(total_score) AS DECIMAL (10, 2)
       ) AS 'avg_total_score',
       CAST(
-              STD(total_score) AS DECIMAL (10, 2)
+        STD(total_score) AS DECIMAL (10, 2)
       ) AS 'std_total_score',
       COUNT(DISTINCT stu_id) 'sum_college_stu',
       COUNT(
-              CASE
-              WHEN total_score >= 90 THEN
-                stu_id
-              END
+         CASE
+         WHEN total_score >= 90 THEN
+          stu_id
+          END
       ) 'sum_excellent',
       COUNT(
-              CASE
-              WHEN total_score &lt; 90
-                   AND total_score >= 80 THEN
-                stu_id
-              END
+          CASE
+          WHEN total_score &lt; 90
+          AND total_score >= 80 THEN
+           stu_id
+           END
       ) 'sum_good',
       COUNT(
-              CASE
-              WHEN total_score &lt; 80
-                   AND total_score >= 70 THEN
-                stu_id
-              END
+           CASE
+           WHEN total_score &lt; 80
+            AND total_score >= 70 THEN
+            stu_id
+           END
       ) 'sum_medium',
       COUNT(
-              CASE
-              WHEN total_score &lt; 70
-                   AND total_score >= 60 THEN
-                stu_id
-              END
+           CASE
+            WHEN total_score &lt; 70
+             AND total_score >= 60 THEN
+              stu_id
+            END
       ) 'sun_pass',
       COUNT(
-              CASE
-              WHEN total_score &lt; 60 THEN
-                stu_id
-              END
+          CASE
+          WHEN total_score &lt; 60 THEN
+            stu_id
+          END
       ) 'sum_fail'
     FROM
       t_math_score

@@ -90,12 +90,14 @@ public class SaMajorServiceImpl implements SaMajorService {
 
     @Override
     public int refreshStdMajor() {
+        //service层
+        //1.对专业总评标准分表 清空
         stdMajorMapper.clearTable();
+        //2.在专业成绩分析表中查询出 List<StdMajor>
         List<StdMajor> stdMajors = saMajorMapper.selectAsStdMajor();
-//        for (int i = 0; i <3; i++) {
-//            System.out.println(stdMajors.get(i));
-//        }
+        //3.将 List<StdMajor>保存到原有的专业总评标准分表中
         int i = stdMajorMapper.insertIntoStdMajor(stdMajors);
+        //4.将 StdMajor表中的标准分更新到SaMajor中
         int i1 = saMajorMapper.updateStdScore();
         return i1;
     }

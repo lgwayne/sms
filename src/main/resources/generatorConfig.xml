@@ -63,11 +63,11 @@
         <!--</table>-->
 
 
-        <!--<table tableName="t_course" domainObjectName="Course" enableCountByExample="false" enableUpdateByExample="false"-->
-               <!--enableDeleteByExample="false" -->
-               <!--selectByExampleQueryId="false" >-->
-            <!--<generatedKey column="course_id" sqlStatement="Mysql" identity="true"/>-->
-        <!--</table>-->
+        <table tableName="t_course" domainObjectName="Course" enableCountByExample="false" enableUpdateByExample="false"
+               enableDeleteByExample="false"
+               selectByExampleQueryId="false" >
+            <generatedKey column="course_id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
         <!--<table tableName="t_major" domainObjectName="Major"-->
                <!--enableCountByExample="false" enableUpdateByExample="false"-->
@@ -131,25 +131,25 @@
             <!--<generatedKey column="stu_id" sqlStatement="Mysql" identity="true"/>-->
         <!--</table>-->
 
-        <!--<table tableName="t_teacher_clazz" domainObjectName="TeacherClazz"-->
+        <!--<table tableName="t_teach_clazz" domainObjectName="TeacherClazz"-->
                <!--enableCountByExample="false" enableUpdateByExample="false"-->
-               <!--enableDeleteByExample="false" -->
+               <!--enableDeleteByExample="false"-->
                <!--selectByExampleQueryId="false" >-->
         <!--</table>-->
 
 
-        <table tableName="t_teacher" domainObjectName="Teacher"
-               enableCountByExample="false" enableUpdateByExample="false"
-               enableDeleteByExample="false"
-               selectByExampleQueryId="false" >
-            <generatedKey column="teacher_id" sqlStatement="Mysql" identity="true"/>
-        </table>
+        <!--<table tableName="t_teacher" domainObjectName="Teacher"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false"-->
+               <!--enableDeleteByExample="false"-->
+               <!--selectByExampleQueryId="false" >-->
+            <!--<generatedKey column="teacher_id" sqlStatement="Mysql" identity="true"/>-->
+        <!--</table>-->
 
         <!--<table tableName="t_teacher_course" domainObjectName="TeacherCourse"-->
                <!--enableCountByExample="false" enableUpdateByExample="false"-->
-               <!--enableDeleteByExample="false" -->
+               <!--enableDeleteByExample="false"-->
                <!--selectByExampleQueryId="false" >-->
-    <!--</table>-->
+         <!--</table>-->
 
         <!--<table tableName="t_userlogin" domainObjectName="Userlogin" enableCountByExample="false" enableUpdateByExample="false"-->
                <!--enableDeleteByExample="false" -->

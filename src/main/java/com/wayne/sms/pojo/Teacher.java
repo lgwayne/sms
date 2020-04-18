@@ -138,4 +138,14 @@ public class Teacher implements Serializable {
     public void setCollegeName(String collegeName) {
         this.collegeName = collegeName == null ? null : collegeName.trim();
     }
+
+    @Override
+    public String toString() {
+        return "Teacher{" +
+                "teacherId=" + teacherId +
+                ", name='" + name + '\'' +
+                ", job='" + job + '\'' +
+                ", collegeName='" + collegeName + '\'' +
+                '}';
+    }
 }

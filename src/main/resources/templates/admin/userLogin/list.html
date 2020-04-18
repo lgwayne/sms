@@ -32,36 +32,6 @@
             <div class="row">
                 <div class="col-sm-12">
                 <!-- 搜索条件 -->
-
-                	 <!--<div class="nest" id="inlineClose">-->
-                            <!--<div class="title-alt">-->
-                                <!--<h6>搜索条件</h6>-->
-                                <!--<div class="titleClose">-->
-                                    <!--<a class="gone" href="#inlineClose">-->
-                                        <!--<span class="entypo-cancel"></span>-->
-                                    <!--</a>-->
-                                <!--</div>-->
-                                <!--<div class="titleToggle">-->
-                                    <!--<a class="nav-toggle-alt" href="#search_div" >-->
-                                        <!--<span class="entypo-down-open"></span>-->
-                                    <!--</a>-->
-                                <!--</div>-->
-                            <!--</div>-->
-
-                            <!--<div class="body-nest" id="search_div" style="display: block">-->
-                                <!--<div class="form_left">-->
-                                    <!--<form role="form" class="form-inline">-->
-                                        <!--<div class="form-group">-->
-                                            <!--<label  class="sr-only">搜索名字</label>-->
-                                            <!--<input type="text" name="searchText" placeholder="搜索名字"class="form-control">-->
-                                        <!--</div>-->
-                                        <!--&lt;!&ndash;<button onclick="$.table.search(this)" class="btn btn-success" type="button"><i class="fa fa-search"></i>&nbsp;搜索</button>&ndash;&gt;-->
-                                        <!--<button onclick="$.table.search(this)" class="btn btn-success" type="submit"><i class="fa fa-search"></i>&nbsp;搜索</button>-->
-                                    <!--</form>-->
-                                <!--</div>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                	<!-- END搜索条件 -->
                     <!-- 空白页开始-->
                     <div class="nest" id="Blank_PageClose">
                         <div class="title-alt">
@@ -123,11 +93,9 @@
 <script th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
 
 <script type="text/javascript">
-
-
 // <!-- 导出 -->
 var dataUrl=window.rootPath+"/admin/userLogin/list";
-var removeUrl=window.rootPath+"/admin/userLogin/remove";
+var removeUrl=window.rootPath+"/admin/userLogin/get/remove";
 var createUrl=window.rootPath+"/admin/userLogin/add";
 var updateUrl=window.rootPath+"/admin/userLogin/edit/{id}";
 var exportUrl=window.rootPath+"/admin/userLogin/export";
@@ -137,8 +105,6 @@ var exportUrl=window.rootPath+"/admin/userLogin/export";
         updateUrl: updateUrl,
         removeUrl:removeUrl,
         exportUrl: exportUrl,
-        undefinedText:'********',
-        sortName: "roleSort",
         modalName: "用户登录信息表",
         search: false,
 	   dataColumns: [
@@ -148,38 +114,23 @@ var exportUrl=window.rootPath+"/admin/userLogin/export";
 			{
 			    field: 'userId',
                 title: '用户id号',
-                //visible: false, //隐藏
-                //searchable: false,//搜索
                 sortable:true//设置true为允许列可以排序
-                //order: asc //排序顺序
             },
 			{
 			    field: 'userName',
 			    title: '用户名字',
-			    //visible: false, //隐藏
-			    //searchable: false,//搜索
 			    sortable:true//设置true为允许列可以排序
-			    //order: asc //排序顺序
 			},
 			{
 			    field:"password",
 			    title: '登录密码',
                 formatter:function(v,r,index){
                     return "********";}
-                // undefinedText:'********',
-                // password:"******"
-			    //visible: false, //隐藏
-			    //searchable: false,//搜索
-			    //sortable:false,//设置true为允许列可以排序
-			    //order: asc //排序顺序
 			},
 			{
 			    field: 'roleName',
 			    title: '角色',
-			    //visible: false, //隐藏
-			    //searchable: false,//搜索
 			    sortable:true//设置true为允许列可以排序
-			    //order: asc //排序顺序
 			},
 			{
 			    title: '操作',

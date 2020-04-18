@@ -27,4 +27,6 @@ public interface TeacherService {
     int updateByPrimaryKeySelective(Teacher record);
 
     int deleteByPrimaryKey(String ids);
+
+    PageInfo<Teacher> listOneTeacher(Tablepar tablepar, String teacherId);
 }

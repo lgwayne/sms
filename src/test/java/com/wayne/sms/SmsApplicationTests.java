@@ -1,6 +1,9 @@
 package com.wayne.sms;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.wayne.sms.dao.*;
+import com.wayne.sms.model.Tablepar;
 import com.wayne.sms.pojo.*;
 import com.wayne.sms.service.*;
 import org.junit.jupiter.api.Test;
@@ -187,26 +190,25 @@ class SmsApplicationTests {
         seriesData.add(avgTotalScoreList);
         seriesData.add(stdTotalScoreList);
 
-        System.out.println("legendData:"+legendData);
-        System.out.println("xAxisData:"+xAxisData);
-        System.out.println("seriesData:"+seriesData);
+        System.out.println("legendData:" + legendData);
+        System.out.println("xAxisData:" + xAxisData);
+        System.out.println("seriesData:" + seriesData);
     }
 
 
-
     @Test
-    public void testSaMajor(){
-       String grade="2017";
-        String courseName="高等数学(1)";
-        String cid="1";
+    public void testSaMajor() {
+        String grade = "2017";
+        String courseName = "高等数学(1)";
+        String cid = "1";
         List<String> xAxisData = new ArrayList<>();
 
         List<BigDecimal> avgRegularScoreList = new ArrayList<>();
         List<BigDecimal> avgFinalScoreList = new ArrayList<>();
         List<BigDecimal> avgTotalScoreList = new ArrayList<>();
         List<BigDecimal> stdTotalScoreList = new ArrayList<>();
-        if (grade!=null && courseName!=null && cid!=null){
-            List<SaMajor> saMajors=saMajorService.selectByCourseAndGradeAndCid(grade,courseName,cid);
+        if (grade != null && courseName != null && cid != null) {
+            List<SaMajor> saMajors = saMajorService.selectByCourseAndGradeAndCid(grade, courseName, cid);
             for (SaMajor saMajor : saMajors) {
                 xAxisData.add(saMajor.getMajor());
                 avgRegularScoreList.add(saMajor.getAvgRegularScore());
@@ -222,19 +224,20 @@ class SmsApplicationTests {
         seriesData.add(avgTotalScoreList);
         seriesData.add(stdTotalScoreList);
 
-        System.out.println("xAxisData:"+xAxisData);
-        System.out.println("seriesData:"+seriesData);
+        System.out.println("xAxisData:" + xAxisData);
+        System.out.println("seriesData:" + seriesData);
     }
 
 
     @Autowired
     private SaClazzService saClazzService;
+
     @Test
-    public void testSaclazz(){
-        String grade="2017";
-        String courseName="高等数学(1)";
-        String mid="1";
-        List<SaClazz> saClazzes = saClazzService.selectByCourseAndGradeAndMid(grade,courseName,mid);
+    public void testSaclazz() {
+        String grade = "2017";
+        String courseName = "高等数学(1)";
+        String mid = "1";
+        List<SaClazz> saClazzes = saClazzService.selectByCourseAndGradeAndMid(grade, courseName, mid);
         for (SaClazz saClazz : saClazzes) {
             System.out.println(saClazz);
         }
@@ -246,8 +249,8 @@ class SmsApplicationTests {
     StudentMapper studentMapper;
 
     @Test
-    public void testStudent(){
-        String clid="12";
+    public void testStudent() {
+        String clid = "12";
         StudentExample studentExample = new StudentExample();
         Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
         studentExample.createCriteria().andClazzEqualTo(clazz.getClazzName());
@@ -258,14 +261,41 @@ class SmsApplicationTests {
     }
 
     @Test
-    public void  testCLA(){
+    public void testCLA() {
 
         Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt("2"));
-        SaClazz saClazz =saClazzService.selectByCourseAndGradeAndClazzName("2017","高等数学(1)",clazz.getClazzName());
+        SaClazz saClazz = saClazzService.selectByCourseAndGradeAndClazzName("2017", "高等数学(1)", clazz.getClazzName());
         System.out.println(saClazz);
 
     }
 
 
+    @Autowired
+    private TeacherCourseMapper teacherCourseMapper;
+
+    @Autowired
+    private TeacherClazzMapper teacherClazzMapper;
+
+    @Test
+    public void testcourse() {
+        MathScoreExample testExample = new MathScoreExample();//根据Example对象来添加筛选条件
+
+        //获取2001教师的班级
+        TeacherClazzExample teacherClazzExample = new TeacherClazzExample();
+        teacherClazzExample.createCriteria().andTeacherIdEqualTo(2001L);
+        List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(teacherClazzExample);
+        List<String> courseName = new ArrayList<>();
+        for (TeacherClazz teacherClazz : teacherClazzes) {
+         courseName.add(teacherClazz.getClazzName() );
+        }
+
+        for (String s : courseName) {
+            System.out.println("这是班级名"+s);
+        }
+        testExample.createCriteria().andClazzIn(courseName);
+
+        List<MathScore> list = mathScoreMapper.selectByExample(testExample);
+
+    }
 
 }

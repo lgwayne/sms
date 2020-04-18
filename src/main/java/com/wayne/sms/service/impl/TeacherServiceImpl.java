@@ -49,9 +49,6 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Override
     public int insertSelective(Teacher teacher) {
-
-        teacher.setTeacherId(null);
-
         return teacherMapper.insertSelective(teacher);
     }
 
@@ -81,5 +78,15 @@ public class TeacherServiceImpl implements TeacherService {
         TeacherExample example=new TeacherExample();
         example.createCriteria().andTeacherIdIn(stringB);
         return teacherMapper.deleteByExample(example);
+    }
+
+    @Override
+    public PageInfo<Teacher> listOneTeacher(Tablepar tablepar, String teacherId) {
+        TeacherExample testExample=new TeacherExample();
+        testExample.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
+        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
+        List<Teacher> list= teacherMapper.selectByExample(testExample);
+        PageInfo<Teacher> pageInfo = new PageInfo<Teacher>(list);
+        return  pageInfo;
     }
 }

@@ -187,7 +187,6 @@
             success: function (data) {
                 for (var i = 0; i < data.length; i++) {
                     $("#major_select").append("<option value='" + data[i].majorId + "'>" + data[i].majorName + "</option>");
-
                 }
                 $("#major_select").select2({
                     placeholder: "请选择"
@@ -197,7 +196,6 @@
                 if (data.length <= 1) {
                     clazzList();
                 }
-
             }
         })
     }
