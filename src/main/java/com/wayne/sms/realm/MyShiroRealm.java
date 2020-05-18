@@ -86,6 +86,7 @@ public class MyShiroRealm extends AuthorizingRealm {
                     userInfo.getPassword(), // 密码
                     getName() // realm name
             );
+            System.out.println(authenticationInfo);
             return authenticationInfo;
         }
 

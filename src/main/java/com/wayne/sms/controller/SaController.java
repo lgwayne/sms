@@ -40,6 +40,8 @@ public class SaController extends BaseController {
     private String teacherSaClazz = "teacher/saClazz";
 
     private String SaStudent = "admin/saStudent";
+
+
     private String teacherSaStudent = "teacher/saStudent";
 
     public  String teacherId=null;
@@ -357,5 +359,9 @@ public class SaController extends BaseController {
     }
 
     /*===================================教师分析模块结束=============================================*/
+
+
+
+
 
 }

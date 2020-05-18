@@ -119,4 +119,14 @@ public class StudentServiceImpl implements StudentService {
         example.createCriteria().andStuIdIn(stringB);
         return studentMapper.deleteByExample(example);
     }
+
+    @Override
+    public PageInfo<Student> listOneStudent(Tablepar tablepar, String studentId) {
+        StudentExample studentExample = new StudentExample();
+        studentExample.createCriteria().andStuIdEqualTo(Long.parseLong(studentId));
+        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
+        List<Student> list= studentMapper.selectByExample(studentExample);
+        PageInfo<Student> pageInfo = new PageInfo<Student>(list);
+        return  pageInfo;
+    }
 }

@@ -111,10 +111,10 @@ public class LoginController extends BaseController {
         }
         if (subject.hasRole("teacher")) {
             return AjaxResult.successData(201, "欢迎来到教师页面");
-        } else if (subject.hasRole("student")) {
+        }
+        if (subject.hasRole("student")) {
             return AjaxResult.successData(202, "欢迎来到学生界面");
         }
-
         return AjaxResult.success();
     }
 
@@ -132,7 +132,6 @@ public class LoginController extends BaseController {
         return "redirect:/login";
     }
 
-
     @RequestMapping("/error/403")
     public String errorPage() {
         return "error/403";
@@ -145,6 +144,11 @@ public class LoginController extends BaseController {
         return "admin/index";
 
     }
+    @GetMapping("/admin/main")
+    public String main(ModelMap map) {
+        setTitle(map, new TitleVo("首页", "首页", true, "欢迎进入管理员页面", true, false));
+        return "admin/main";
+    }
 
     @RequiresRoles("teacher")
     @GetMapping("teacher/index")
@@ -152,14 +156,7 @@ public class LoginController extends BaseController {
         request.getSession().setAttribute("sessionUserName", ShiroUtils.getUser().getUserName());
         request.getSession().setAttribute("sessionUserId",ShiroUtils.getUser().getUserId());
         return "teacher/index";
-
     }
-
-    @GetMapping("student/index")
-    public String index3(HttpServletRequest request) {
-        return "student/index";
-    }
-
 
     @GetMapping(value = {"teacher/main"})
     public String testTeacher2(ModelMap map) {
@@ -167,11 +164,22 @@ public class LoginController extends BaseController {
         return "/teacher/main";
     }
 
-    @GetMapping("/admin/main")
-    public String main(ModelMap map) {
-        setTitle(map, new TitleVo("首页", "首页", true, "欢迎进入管理员页面", true, false));
-        return "admin/main";
+
+    @RequiresRoles("student")
+    @GetMapping("student/index")
+    public String index3(HttpServletRequest request) {
+        request.getSession().setAttribute("sessionUserName", ShiroUtils.getUser().getUserName());
+        request.getSession().setAttribute("sessionUserId",ShiroUtils.getUser().getUserId());
+        return "student/index";
     }
+
+    @GetMapping("/student/main")
+    public String studentMain(ModelMap map) {
+        setTitle(map, new TitleVo("首页", "首页", true, "欢迎进入学生页面", true, false));
+        return "/student/main";
+    }
+
+
 
 
 }

@@ -53,14 +53,11 @@ public class AdminController extends BaseController {
 
     private String student = "admin/student";
 
-    private String teacher= "admin/teacher";
+    private String teacher = "admin/teacher";
 
-    private String score="admin/mathScore";
+    private String score = "admin/mathScore";
 
-    private String teacherCourse="admin/teacherCourse";
-
-
-
+    private String teacherCourse = "admin/teacherCourse";
 
 
     /*-------------------用户登录模块开始-------------------------*/
@@ -193,34 +190,31 @@ public class AdminController extends BaseController {
     /*---------------------------用户登录管理结束---------------------------------------*/
 
 
-
-
     /*---------------------------课程安排模块开始---------------------------------------*/
     @GetMapping("/admin/teacherCourse/view")
-    public String teacherCourseView(ModelMap model){
-        String str="课程任教表";
-        setTitle(model, new TitleVo("列表", str+"管理", true,"欢迎进入"+str+"页面", true, false));
+    public String teacherCourseView(ModelMap model) {
+        String str = "课程任教表";
+        setTitle(model, new TitleVo("列表", str + "管理", true, "欢迎进入" + str + "页面", true, false));
         return teacherCourse + "/list";
     }
 
     @PostMapping("admin/teacherCourse/list")
     @ResponseBody
-    public Object teacherCourselist(Tablepar tablepar,String searchText){
-        PageInfo<TeacherCourse> page=teacherCourseService.list(tablepar,searchText) ;
-        TableSplitResult<TeacherCourse> result=new TableSplitResult<TeacherCourse>(page.getPageNum(), page.getTotal(), page.getList());
-        return  result;
+    public Object teacherCourselist(Tablepar tablepar, String searchText) {
+        PageInfo<TeacherCourse> page = teacherCourseService.list(tablepar, searchText);
+        TableSplitResult<TeacherCourse> result = new TableSplitResult<TeacherCourse>(page.getPageNum(), page.getTotal(), page.getList());
+        return result;
     }
 
 
     @GetMapping("/admin/teacherCourse/edit/{id}")
-    public String teacherClazz(@PathVariable("id") String id, ModelMap mmap)
-    {
+    public String teacherClazz(@PathVariable("id") String id, ModelMap mmap) {
 
         TeacherClazzExample example = new TeacherClazzExample();
         example.createCriteria().andTeacherIdEqualTo(Long.parseLong(id));
         List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(example);
 
-        mmap.addAttribute("teacherClazzes",teacherClazzes);
+        mmap.addAttribute("teacherClazzes", teacherClazzes);
         return teacherCourse + "/edit";
     }
     /*---------------------------课程安排模块结束---------------------------------------*/
@@ -275,10 +269,10 @@ public class AdminController extends BaseController {
         teacher1.setJob(teacher.getJob());
         teacher1.setCollegeName(teacher.getCollegeName());
 
-        int b=teacherService.insertSelective(teacher1);
-        if(b>0){
+        int b = teacherService.insertSelective(teacher1);
+        if (b > 0) {
             return success();
-        }else{
+        } else {
             return error();
         }
 
@@ -291,11 +285,11 @@ public class AdminController extends BaseController {
      */
     @PostMapping("admin/teacher/checkNameUnique")
     @ResponseBody
-    public int checkNameUnique(Teacher teacher){
-        int b=teacherService.checkNameUnique(teacher);
-        if(b>0){
+    public int checkNameUnique(Teacher teacher) {
+        int b = teacherService.checkNameUnique(teacher);
+        if (b > 0) {
             return 1;
-        }else{
+        } else {
             return 0;
         }
     }
@@ -348,9 +342,9 @@ public class AdminController extends BaseController {
     @ResponseBody
     public AjaxResult teacherRemove(String ids) {
         int b = userloginService.deleteByPrimaryKey(ids);//根据教师id在用户登录表删除，教师表的信息也会删除
-        if(b>0){
+        if (b > 0) {
             return success();
-        }else{
+        } else {
             return error();
         }
     }
@@ -375,15 +369,15 @@ public class AdminController extends BaseController {
 
     @PostMapping("admin/student/list")
     @ResponseBody
-    public Object studentList(Tablepar tablepar, String searchText,ModelMap model,String cid,String mid,String clid,String grade) {
+    public Object studentList(Tablepar tablepar, String searchText, ModelMap model, String cid, String mid, String clid, String grade) {
         List<College> colleges = collegeService.selectByExample(new CollegeExample());
         model.addAttribute("collegeList", colleges);//将学院信息以列表形式传到html页面
 
-        PageInfo<Student> page=null;
-        if (cid==null && mid==null && clid==null){
+        PageInfo<Student> page = null;
+        if (cid == null && mid == null && clid == null) {
             page = studentService.list(tablepar, searchText);
-        }else {
-            page = studentService.search(tablepar,cid,mid,clid,grade);
+        } else {
+            page = studentService.search(tablepar, cid, mid, clid, grade);
         }
 
         TableSplitResult<Student> result = new TableSplitResult<Student>(page.getPageNum(), page.getTotal(), page.getList());
@@ -441,7 +435,10 @@ public class AdminController extends BaseController {
      */
     @GetMapping("/admin/student/edit/{id}")
     public String studentEdit(@PathVariable("id") String id, ModelMap mmap) {
+
         mmap.put("Student", studentService.selectByPrimaryKey(id));
+        List<College> colleges = collegeService.selectByExample(new CollegeExample());
+        mmap.addAttribute("collegeList", colleges);
 
         return student + "/edit";
     }
@@ -452,10 +449,29 @@ public class AdminController extends BaseController {
      */
     @PostMapping("admin/student/edit")
     @ResponseBody
-    public AjaxResult editSave(Student record) {
-        return toAjax(studentService.updateByPrimaryKeySelective(record));
+    public AjaxResult editSave(Student record, String cid, String mid, String clid) {
+        System.out.println("学生信息" + record);
+        String c_name = null, m_name = null, cl_name = null;
+        if (cid != null && mid != null && clid != null && isNum(cid) && isNum(mid) && isNum(clid)) {
+            c_name = collegeMapper.selectByCollegeId(Integer.parseInt(cid)).getCollegeName();
+            m_name = majorMapper.selectByMajorId(Integer.parseInt(mid)).getMajorName();
+            cl_name = clazzMapper.selectByClazzId(Integer.parseInt(clid)).getClazzName();
+            record.setCollege(c_name);
+            record.setMajor(m_name);
+            record.setClazz(cl_name);
+            System.out.println("学生信息改之后："+record);
+
+            return toAjax(studentService.updateByPrimaryKeySelective(record));
+        }else
+            return AjaxResult.error("请确认输入信息");
+
     }
 
+    public boolean isNum(String ids) {
+        return ids.matches("[0-9]+");
+    }
+
+    ;
 
     @PostMapping("admin/student/get/{id}")
     public Student studentEdit(@PathVariable("id") String id) {
@@ -493,12 +509,14 @@ public class AdminController extends BaseController {
         List<Course> courseList = courseService.selectByExample(new CourseExample());
         model.addAttribute("courseList", courseList);
         return score + "/list";
-    };
+    }
+
+    ;
 
     @PostMapping("admin/mathScore/list")
     @ResponseBody
-    public Object  scoreList(Tablepar tablepar, String searchText,ModelMap model,String cid,String mid,String clid,String grade,String courseName,String scoreOder) {
-        PageInfo<MathScore> page = mathScoreService.list(tablepar, searchText,cid,mid,clid,grade,courseName,scoreOder);
+    public Object scoreList(Tablepar tablepar, String searchText, ModelMap model, String cid, String mid, String clid, String grade, String courseName, String scoreOder) {
+        PageInfo<MathScore> page = mathScoreService.list(tablepar, searchText, cid, mid, clid, grade, courseName, scoreOder);
         TableSplitResult<MathScore> result = new TableSplitResult<MathScore>(page.getPageNum(), page.getTotal(), page.getList());
         return result;
     }
@@ -508,8 +526,7 @@ public class AdminController extends BaseController {
      */
 
     @GetMapping("/admin/mathScore/add")
-    public String mathScoreAdd(ModelMap modelMap)
-    {
+    public String mathScoreAdd(ModelMap modelMap) {
         List<College> colleges = collegeService.selectByExample(new CollegeExample());
         modelMap.addAttribute("collegeList", colleges);
 
@@ -520,19 +537,10 @@ public class AdminController extends BaseController {
 
     @PostMapping("admin/mathScore/add")
     @ResponseBody
-    public AjaxResult add(MathScore mathScore){
-//        int b=mathScoreService.insertSelective(mathScore);
-//        if(b>0){
-//            return success();
-//        }else{
-//            return error();
-//        }
-//
-
-        System.out.println("before:"+mathScore);
+    public AjaxResult add(MathScore mathScore) {
+        System.out.println("before:" + mathScore);
         String stuId = mathScore.getStuName();
         mathScore.setStuId(Long.parseLong(stuId));
-
         //完善学生信息
         StudentExample studentExample = new StudentExample();
         studentExample.createCriteria().andStuIdEqualTo(Long.parseLong(stuId));
@@ -545,73 +553,61 @@ public class AdminController extends BaseController {
         mathScore.setMajor(major);
         String clazz = students.get(0).getClazz();
         mathScore.setClazz(clazz);
-
         //根据对应科目名获取课程信息(平时成绩占比和期末成绩占比)
         String courseName = mathScore.getCourseName();
         CourseExample courseExample = new CourseExample();
         courseExample.createCriteria().andCourseNameEqualTo(courseName);
+        //从数据库中查找成绩评定标准
         List<Course> courses = courseMapper.selectByExample(courseExample);
         Double finalScorePer = courses.get(0).getFinalScorePer();
         Double regularScorePer = courses.get(0).getRegularScorePer();
         mathScore.setRegularScorePer(regularScorePer);
         mathScore.setFinalScorePer(finalScorePer);
-
         //根据根据成绩和占比算出总评和绩点
-        Double total_score =0.00;
-        total_score=mathScore.getRegularScore()*(regularScorePer*0.01)+mathScore.getFinalScore()*(finalScorePer*0.01);
+        Double total_score = 0.00;
+        total_score = mathScore.getRegularScore() * (regularScorePer * 0.01) + mathScore.getFinalScore() * (finalScorePer * 0.01);
         mathScore.setTotalScore((double) Math.round(total_score));
-
         double tScore = Math.round(total_score);
-        Double gpa=(tScore-50)/10;
+        Double gpa = (tScore - 50) / 10;
         mathScore.setGpa(gpa);
-
-        System.out.println("添加信息之后的："+mathScore);
-
-
+        System.out.println("添加信息之后的：" + mathScore);
+//        int b=mathScoreService.insertSelective(mathScore);
+//        if(b>0){
+//            return success();
+//        }else{
+//            return error();
+//        }
         return null;
+//
     }
 
     /**
      * 删除用户
+     *
      * @param ids
      * @return
      */
     @PostMapping("admin/mathScore/remove")
     @ResponseBody
-    public AjaxResult mathScoreRemove(String ids){
-        int b=mathScoreService.deleteByPrimaryKey(ids);
-        if(b>0){
+    public AjaxResult mathScoreRemove(String ids) {
+        int b = mathScoreService.deleteByPrimaryKey(ids);
+        if (b > 0) {
             return success();
-        }else{
+        } else {
             return error();
         }
     }
 
-//    /**
-//     * 检查用户
-//     * @return
-//     */
-//    @PostMapping("admin/mathScore/checkNameUnique")
-//    @ResponseBody
-//    public int checkNameUnique(MathScore mathScore){
-//        int b=mathScoreService.checkNameUnique(mathScore);
-//        if(b>0){
-//            return 1;
-//        }else{
-//            return 0;
-//        }
-//    }
-
 
     /**
      * 修改跳转
+     *
      * @param id
      * @param mmap
      * @return
      */
     @GetMapping("/admin/mathScore/edit/{id}")
-    public String mathScoreEdit(@PathVariable("id") String id, ModelMap mmap)
-    {
+    public String mathScoreEdit(@PathVariable("id") String id, ModelMap mmap) {
         mmap.put("MathScore", mathScoreService.selectByPrimaryKey(id));
 
         return score + "/edit";
@@ -622,8 +618,16 @@ public class AdminController extends BaseController {
      */
     @PostMapping("admin/mathScore/edit")
     @ResponseBody
-    public AjaxResult editSave(MathScore record)
-    {
+    public AjaxResult editSave(MathScore record) {
+        Double finalScorePer = record.getFinalScorePer();
+        Double regularScorePer = record.getRegularScorePer();
+        Double total_score = 0.00;
+        total_score = record.getRegularScore() * (regularScorePer * 0.01) + record.getFinalScore() * (finalScorePer * 0.01);
+        record.setTotalScore((double) Math.round(total_score));
+        double tScore = Math.round(total_score);
+        Double gpa = (tScore - 50) / 10;
+        record.setGpa(gpa);
+
         return toAjax(mathScoreService.updateByPrimaryKeySelective(record));
     }
 

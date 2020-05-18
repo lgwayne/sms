@@ -139,7 +139,7 @@ public class MathScoreServiceImpl implements MathScoreService {
     }
 
     @Override
-    public PageInfo<MathScore> listByTeacher(Tablepar tablepar,String teacherId, String searchText, String clid, String grade, String courseName, String scoreOder) {
+    public PageInfo<MathScore> listByTeacher(Tablepar tablepar, String teacherId, String searchText, String clid, String grade, String courseName, String scoreOder) {
         MathScoreExample testExample = new MathScoreExample();//根据Example对象来添加筛选条件
         TeacherClazzExample teacherClazzExample = new TeacherClazzExample();
         teacherClazzExample.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
@@ -147,9 +147,9 @@ public class MathScoreServiceImpl implements MathScoreService {
         List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(teacherClazzExample);
         List<String> clazzList = new ArrayList<>();
         for (TeacherClazz teacherClazz : teacherClazzes) {
-            clazzList.add(teacherClazz.getClazzName() );
+            clazzList.add(teacherClazz.getClazzName());
         }
-        if(clid==null) {
+        if (clid == null) {
             testExample.createCriteria().andClazzIn(clazzList);
         }
         if (scoreOder == null || "ID".equals(scoreOder)) {
@@ -165,7 +165,7 @@ public class MathScoreServiceImpl implements MathScoreService {
 
         if (grade != null && courseName != null && clid != null) {
             Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
-            System.out.println("这里是mapper的clid"+clazz);
+            System.out.println("这里是mapper的clid" + clazz);
             testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade)).andClazzEqualTo(clazz.getClazzName());
         } else if (grade != null & courseName != null) {
             testExample.createCriteria().andCourseNameEqualTo(courseName).andGradeEqualTo(Integer.parseInt(grade));
@@ -173,6 +173,28 @@ public class MathScoreServiceImpl implements MathScoreService {
             testExample.createCriteria().andCourseNameEqualTo(courseName);
         } else if (grade != null) {
             testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade));
+        }
+        PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
+        List<MathScore> list = mathScoreMapper.selectByExample(testExample);
+        PageInfo<MathScore> pageInfo = new PageInfo<MathScore>(list);
+        return pageInfo;
+    }
+
+    @Override
+    public PageInfo<MathScore> listByStudent(Tablepar tablepar, String studentId, String scoreOder, String courseName) {
+        MathScoreExample testExample = new MathScoreExample();
+        if (studentId != null && scoreOder == null && courseName == null) {
+            testExample.createCriteria().andStuIdEqualTo(Long.parseLong(studentId));
+        }
+        if (scoreOder == null || "ID".equals(scoreOder)) {
+            testExample.setOrderByClause("id ASC");//根据id默认升序排序
+        } else if ("ASC".equals(scoreOder)) {
+            testExample.setOrderByClause("total_score ASC");//根据总评成绩程序排序
+        } else if ("DESC".equals(scoreOder)) {
+            testExample.setOrderByClause("total_score DESC");//根据总评成绩降序排序
+        }
+        if (courseName != null) {
+            testExample.createCriteria().andStuIdEqualTo(Long.parseLong(studentId)).andCourseNameEqualTo(courseName);
         }
         PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
         List<MathScore> list = mathScoreMapper.selectByExample(testExample);

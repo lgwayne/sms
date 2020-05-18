@@ -46,6 +46,8 @@ public class EchartsController extends BaseController {
 
     private String teacherId;
 
+    public String studentId;
+
     @Autowired
     private ClazzMapper clazzMapper;
 
@@ -533,6 +535,71 @@ public class EchartsController extends BaseController {
 
         return teacherSaStudent+ "/Bar";
     }
+    /*=======================================教师部分结束=======================================================================*/
 
+
+
+    /*===================================学生个人分析模块开始============================================*/
+    @GetMapping("/student/saStudent/bar.html")
+    public String saStudentBarView(ModelMap model, HttpServletRequest request,String tid) {
+        String str = "学生成绩对比";
+        studentId=tid;
+        setTitle(model, new TitleVo("视图分析", str + "分析", true, "欢迎进入" + str + "页面", true, false));
+        List<Course> courseList = courseService.selectByExample(new CourseExample());
+        model.addAttribute("courseList", courseList);
+
+        return "student/saStudent/Bar";
+    }
+
+    @GetMapping("/student/saStudent/bar")
+    @ResponseBody
+    public AjaxResult getStudentSaStudentBar(String courseName){
+        //检验输入信息
+        System.out.println(studentId+"============="+courseName);
+       if(courseName==null){
+           return AjaxResult.error("请选择学科");
+       }
+        //创建集合对象传输数据
+        List seriesData = new ArrayList();
+        List clazzScore = new ArrayList<>();
+        List majorScore = new ArrayList<>();
+        List collegeScore = new ArrayList<>();
+        List studentScore = new ArrayList<>();
+        //找到学生的信息
+        StudentExample studentExample = new StudentExample();
+        studentExample.createCriteria().andStuIdEqualTo(Long.parseLong(studentId));
+        List<Student> students = studentMapper.selectByExample(studentExample);
+        //students.get(0)为学生对象
+        String grade= String.valueOf(students.get(0).getGrade());
+        //学生所在班级
+        SaClazz saClazz =saClazzService.selectByCourseAndGradeAndClazzName(grade,courseName,students.get(0).getClazz());
+        clazzScore.add(saClazz.getAvgRegularScore());
+        clazzScore.add(saClazz.getAvgFinalScore());
+        clazzScore.add(saClazz.getAvgTotalScore());
+
+        //学生所在专业
+        SaMajor saMajor=saMajorService.selectByCourseAndGradeAndMajorName(grade,courseName,students.get(0).getMajor());
+        majorScore.add(saMajor.getAvgRegularScore());
+        majorScore.add(saMajor.getAvgFinalScore());
+        majorScore.add(saMajor.getAvgTotalScore());
+
+        //学生所在学院
+        SaCollege saCollege = saCollegeService.selectByCourseAndGradeAndCollegeName(grade,courseName,students.get(0).getCollege());
+        collegeScore.add(saCollege.getAvgRegularScore());
+        collegeScore.add(saCollege.getAvgFinalScore());
+        collegeScore.add(saCollege.getAvgTotalScore());
+
+
+        SaStudent saStudent=saStudentService.selectByStuId(Long.parseLong(studentId));
+        studentScore.add(saStudent.getRegularScore());
+        studentScore.add(saStudent.getFinalScore());
+        studentScore.add(saStudent.getTotalScore());
+
+        seriesData.add(clazzScore);
+        seriesData.add(majorScore);
+        seriesData.add(collegeScore);
+        seriesData.add(studentScore);
+        return AjaxResult.success().put("seriesData",seriesData);
+    }
 
 }

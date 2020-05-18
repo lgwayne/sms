@@ -193,8 +193,13 @@
 <script type="text/javascript">
     $(function () {
 
-        $("#form-add").validate({
+        var times= $("#college_select")[0].options.length;
+        var append= "<option th:each='list : ${collegeList}' th:text='${list.collegeName}' +th:value='${list.collegeId}'></option><option th:each='list : ${collegeList}' th:text='${list.collegeName}' +th:value='${list.collegeId}'></option>";
+        if (times=1){
+            $("#college_select").val(append);
+        }
 
+        $("#form-add").validate({
             rules: {
                 regularScore: {
                     required: true,

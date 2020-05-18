@@ -28,4 +28,6 @@ public interface StudentService {
 
     int deleteByPrimaryKey(String ids);
 
+    PageInfo<Student> listOneStudent(Tablepar tablepar, String studentId);
+
 }

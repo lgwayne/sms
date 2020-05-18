@@ -38,4 +38,5 @@ public interface MathScoreService {
 
     PageInfo<MathScore> listByTeacher(Tablepar tablepar,String teacherId, String searchText, String clid, String grade, String courseName, String scoreOder);
 
+    PageInfo<MathScore> listByStudent(Tablepar tablepar, String studentId, String scoreOder, String courseName);
 }

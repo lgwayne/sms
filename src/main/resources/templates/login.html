@@ -157,7 +157,7 @@
                     this.loginSubmit();
                     this.showdd();
                     this.ifyzm();
-                    this.rollVerification();
+                    // this.rollVerification();
                 },
                 ifyzm:function(){
                     if(isRoll){
@@ -317,11 +317,12 @@
                                     },
                                     success : function(data) {
                                         if(data.code==200){
-                                            location.href = rootPath + '/admin/index';
+                                            location.href = rootPath +'/admin/index';
                                         }else if (data.code==201){
                                             location.href= rootPath +'/teacher/index';
 										} else if (data.code==202){
-                                            location.herf = rootPath+'/student/index';
+                                            // location.href= rootPath +'/teacher/index';
+                                            location.href = rootPath+ '/student/index';
 										}
                                         else{
                                             v2.showdd().init();

@@ -84,6 +84,9 @@ public TeacherCourseMapper teacherCourseMapper;
     @Autowired
     public CourseMapper courseMapper;
 
+    @Autowired
+    public TeacherMapper teacherMapper;
+
 
 
     /**

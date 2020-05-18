@@ -29,19 +29,17 @@
 						<form  class="form-horizontal m" id="form-edit" th:object="${Student}">
 							<input id="id" name="id" type="hidden" th:field="*{stuId}"/>
 
-							<fieldset disabled="disabled">
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">姓名：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="name" name="name" th:value="*{name}"/>
+											<input class="form-control" type="text" id="name" name="name" th:value="*{name}" readonly="readonly"/>
 										</div>
 									</div>
-							</fieldset>
-								
+
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">年级：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="grade" name="grade" th:value="*{grade}"/>
+											<input class="form-control" type="text" id="grade" name="grade" th:value="*{grade}" readonly="readonly"/>
 										</div>
 									</div>
 
@@ -49,7 +47,14 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">学院：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="college" name="college" th:value="*{college}"/>
+											<select class="form-control" id="college_select" name="cid">
+												<option th:value="*{college}" th:text="*{college}"></option>
+												<option th:each="list : ${collegeList}"
+														th:text="${list.collegeName}"
+														th:value="${list.collegeId}">First
+												</option>
+											</select>
+											<!--<input class="form-control" type="text" id="college" name="college" th:value="*{college}"/>-->
 										</div>
 									</div>
 
@@ -57,7 +62,10 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">专业：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="major" name="major" th:value="*{major}"/>
+											<select class="form-control" id="major_select" name="mid">
+												<option id="ora_mid" th:value="*{major}" th:text="*{major}"></option>
+											</select>
+											<!--<input class="form-control" type="text" id="major" name="major" th:value="*{major}"/>-->
 										</div>
 									</div>
 
@@ -65,7 +73,10 @@
 									<div class="form-group">
 										<label class="col-sm-3 control-label ">班级：</label>
 										<div class="col-sm-8">
-											<input class="form-control" type="text" id="clazz" name="clazz" th:value="*{clazz}"/>
+											<!--<input class="form-control" type="text" id="clazz" name="clazz" th:value="*{clazz}"/>-->
+											<select class="form-control" id="clazz_select" name="clid">
+												<option id="ora_clid" th:value="*{clazz}" th:text="*{clazz}"></option>
+											</select>
 										</div>
 									</div>
 
@@ -99,6 +110,51 @@
 <!-- 遮罩层 -->
 <script th:src="@{/static/admin/assets/js/blockUI/jquery.blockUI.js}" type="text/javascript"></script>
 <script type="text/javascript">
+    //城市查询
+    function majorList() {
+        $("#major_select").html("");
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: window.rootPath + "/admin/collegeLinked/getMajor?cid=" + $("#college_select").val(),
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#major_select").append("<option value='" + data[i].majorId + "'>" + data[i].majorName + "</option>");
+                }
+                $("#major_select").on("change", function (e) {
+                    clazzList();
+                })
+
+            }
+        })
+    }
+
+    //区县查询
+    function clazzList() {
+        $("#clazz_select").html("");
+        $.ajax({
+            type: 'get',
+            dataType: 'json',
+            url: window.rootPath + "/admin/collegeLinked/getClazz?mid=" + $("#major_select").val(),
+            success: function (data) {
+                for (var i = 0; i < data.length; i++) {
+                    $("#clazz_select").append("<option value='" + data[i].clazzId + "'>" + data[i].clazzName + "</option>");
+                }
+            }
+        })
+    }
+
+    $(function () {
+        $("#college_select").on("change", function (e) {
+            majorList();
+        });
+        $("#college_select").click(function () {
+            $("#clazz_select option").html("");
+        })
+    })
+</script>
+
+<script type="text/javascript">
 $(function(){
 	 $(".MyDate").datetimepicker({
 		 	format: "yyyy-mm-dd hh:00:00",
@@ -112,8 +168,18 @@ $(function(){
 	
 })
 
-
 $("#form-edit").validate({
+	rules:{
+        cid: {
+            required: true
+        },
+        mid: {
+            required: true
+        },
+        clid:{
+            required: true
+        }
+	},
 	submitHandler : function(form) {
 		edit();
 	}
@@ -124,7 +190,7 @@ function edit() {
 	$.ajax({
 		cache : true,
 		type : "POST",
-		url : rootPath + "/StudentController/edit",
+		url : rootPath + "/admin/student/edit",
 		data : dataFormJson,
 		async : false,
 		error : function(request) {
