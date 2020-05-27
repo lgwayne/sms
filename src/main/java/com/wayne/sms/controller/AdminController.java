@@ -24,6 +24,7 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.servlet.server.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -122,6 +123,7 @@ public class AdminController extends BaseController {
     @PostMapping("admin/userLogin/checkNameUnique")
     @ResponseBody
     public int checkNameUnique(Userlogin userlogin) {
+
 //        System.out.println("这是检查的userlogin"+userlogin);
         int b = userloginService.checkNameUnique(userlogin);
         if (b > 0) {
@@ -515,8 +517,8 @@ public class AdminController extends BaseController {
 
     @PostMapping("admin/mathScore/list")
     @ResponseBody
-    public Object scoreList(Tablepar tablepar, String searchText, ModelMap model, String cid, String mid, String clid, String grade, String courseName, String scoreOder) {
-        PageInfo<MathScore> page = mathScoreService.list(tablepar, searchText, cid, mid, clid, grade, courseName, scoreOder);
+    public Object scoreList(Tablepar tablepar, String searchText, ModelMap model, String cid, String mid, String clid, String grade, String courseName, String order) {
+        PageInfo<MathScore> page = mathScoreService.list(tablepar, searchText, cid, mid, clid, grade, courseName, order);
         TableSplitResult<MathScore> result = new TableSplitResult<MathScore>(page.getPageNum(), page.getTotal(), page.getList());
         return result;
     }
@@ -571,13 +573,13 @@ public class AdminController extends BaseController {
         Double gpa = (tScore - 50) / 10;
         mathScore.setGpa(gpa);
         System.out.println("添加信息之后的：" + mathScore);
-//        int b=mathScoreService.insertSelective(mathScore);
-//        if(b>0){
-//            return success();
-//        }else{
-//            return error();
-//        }
-        return null;
+        int b=mathScoreService.insertSelective(mathScore);
+        if(b>0){
+            return success();
+        }else{
+            return error();
+        }
+//        return null;
 //
     }
 
@@ -626,7 +628,11 @@ public class AdminController extends BaseController {
         record.setTotalScore((double) Math.round(total_score));
         double tScore = Math.round(total_score);
         Double gpa = (tScore - 50) / 10;
-        record.setGpa(gpa);
+        if (gpa>=0){
+            record.setGpa(gpa);
+        }else {
+            record.setGpa(0.0);
+        }
 
         return toAjax(mathScoreService.updateByPrimaryKeySelective(record));
     }

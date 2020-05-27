@@ -11,6 +11,7 @@
     <groupId>com.wayne</groupId>
     <artifactId>sms</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>sms</name>
     <description>wayne's graduation project</description>
 
@@ -43,6 +44,7 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>

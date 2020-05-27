@@ -43,6 +43,7 @@ public class MathScoreServiceImpl implements MathScoreService {
     @Override
     public PageInfo<MathScore> list(Tablepar tablepar, String name, String cid, String mid, String clid, String grade, String courseName, String scoreOder) {
         MathScoreExample testExample = new MathScoreExample();//根据Example对象来添加筛选条件
+        System.out.println(scoreOder+"............");
         if (scoreOder == null || "ID".equals(scoreOder)) {
             testExample.setOrderByClause("id ASC");//根据id默认升序排序
         } else if ("ASC".equals(scoreOder)) {
@@ -144,6 +145,10 @@ public class MathScoreServiceImpl implements MathScoreService {
         TeacherClazzExample teacherClazzExample = new TeacherClazzExample();
         teacherClazzExample.createCriteria().andTeacherIdEqualTo(Long.parseLong(teacherId));
 
+        if (searchText != null && !"".equals(searchText)) {
+            testExample.createCriteria().andStuNameLike("%" + searchText + "%");
+        }
+
         List<TeacherClazz> teacherClazzes = teacherClazzMapper.selectByExample(teacherClazzExample);
         List<String> clazzList = new ArrayList<>();
         for (TeacherClazz teacherClazz : teacherClazzes) {
@@ -159,9 +164,7 @@ public class MathScoreServiceImpl implements MathScoreService {
         } else if ("DESC".equals(scoreOder)) {
             testExample.setOrderByClause("total_score DESC");//根据总评成绩降序排序
         }
-        if (searchText != null && !"".equals(searchText)) {
-            testExample.createCriteria().andStuNameLike("%" + searchText + "%");
-        }
+
 
         if (grade != null && courseName != null && clid != null) {
             Clazz clazz = clazzMapper.selectByClazzId(Integer.parseInt(clid));
@@ -174,6 +177,7 @@ public class MathScoreServiceImpl implements MathScoreService {
         } else if (grade != null) {
             testExample.createCriteria().andGradeEqualTo(Integer.parseInt(grade));
         }
+
         PageHelper.startPage(tablepar.getPageNum(), tablepar.getPageSize());
         List<MathScore> list = mathScoreMapper.selectByExample(testExample);
         PageInfo<MathScore> pageInfo = new PageInfo<MathScore>(list);
